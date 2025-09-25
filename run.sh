@@ -19,12 +19,8 @@ conda activate eegenv
 # Move to the working directory
 cd /scratch/$USER/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master
 
-# Optional: print diagnostic info
-echo "Running on node: $HOSTNAME"
-nvidia-smi
-python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('Device count:', torch.cuda.device_count())"
 
-# --- Run your training script ---
-export CUDA_VISIBLE_DEVICES=0
+# --- Run your training script
+export CUDA_VISIBLE_DEVICES=1
 python trainer.py
 

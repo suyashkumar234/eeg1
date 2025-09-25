@@ -338,10 +338,10 @@ if __name__ == '__main__':
     del_ids = [31,32,33,34,35,36,37,38,39,40]
     sub_ids = [sub_id for sub_id in sub_ids if sub_id not in del_ids]
 
-    val_ids =  [1,2,3,6]
+    val_ids =  [15,16,17,18]
     train_ids = [sub_id for sub_id in sub_ids if sub_id not in val_ids]
 
-    seq_alldata,  alllabel = getData(args, sub_ids)
+    seq_alldata,  alllabel = getData(args, sub_ids, analyze_variation=True, normalize=True) 
     savemodel_acc = cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata,  alllabel)
 
     print(f"lr:{args.lr } -> bs:{args.batch_size}")

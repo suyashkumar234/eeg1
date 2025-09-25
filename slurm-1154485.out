@@ -1,0 +1,303 @@
+==========================================
+SLURM_CLUSTER_NAME = param-shivay
+SLURM_ARRAY_JOB_ID = 
+SLURM_ARRAY_TASK_ID = 
+SLURM_ARRAY_TASK_COUNT = 
+SLURM_ARRAY_TASK_MAX = 
+SLURM_ARRAY_TASK_MIN = 
+SLURM_JOB_ACCOUNT = mechanical_engg
+SLURM_JOB_ID = 1154485
+SLURM_JOB_NAME = eeg-train
+SLURM_JOB_NODELIST = gpu007
+SLURM_JOB_USER = suyash.kumar.mec22.itbhu
+SLURM_JOB_UID = 6339
+SLURM_JOB_PARTITION = gpu
+SLURM_TASK_PID = 8717
+SLURM_SUBMIT_DIR = /scratch/suyash.kumar.mec22.itbhu/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master
+SLURM_CPUS_ON_NODE = 8
+SLURM_NTASKS = 
+SLURM_TASK_PID = 8717
+==========================================
+Current device is cuda
+start time: task1_AAD_MM-AAD_2025-09-25-17-16-55
+============================================================================================================
+Arguments =
+	_action_groups: [<argparse._ArgumentGroup object at 0x7f19b6ed07f0>, <argparse._ArgumentGroup object at 0x7f19b67af400>]
+	_actions: [_HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None)]
+	_defaults: {}
+	_has_negative_number_optionals: []
+	_mutually_exclusive_groups: []
+	_negative_number_matcher: re.compile('^-\\d+$|^-\\d*\\.\\d+$')
+	_option_string_actions: {'-h': _HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None), '--help': _HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None)}
+	_optionals: <argparse._ArgumentGroup object at 0x7f19b67af400>
+	_positionals: <argparse._ArgumentGroup object at 0x7f19b6ed07f0>
+	_registries: {'action': {None: <class 'argparse._StoreAction'>, 'store': <class 'argparse._StoreAction'>, 'store_const': <class 'argparse._StoreConstAction'>, 'store_true': <class 'argparse._StoreTrueAction'>, 'store_false': <class 'argparse._StoreFalseAction'>, 'append': <class 'argparse._AppendAction'>, 'append_const': <class 'argparse._AppendConstAction'>, 'count': <class 'argparse._CountAction'>, 'help': <class 'argparse._HelpAction'>, 'version': <class 'argparse._VersionAction'>, 'parsers': <class 'argparse._SubParsersAction'>, 'extend': <class 'argparse._ExtendAction'>}, 'type': {None: <function ArgumentParser.__init__.<locals>.identity at 0x7f19a1d1b280>}}
+	_subparsers: None
+	add_help: True
+	allow_abbrev: True
+	argument_default: None
+	batch_size: 128
+	conflict_handler: error
+	data_path: /home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_only/preprocessed/data/
+	dataset: MM-AAD
+	description: None
+	eeg_channel: 32
+	epilog: None
+	exit_on_error: True
+	fig_path: ./exps/cross-subject/DARNet/figures/
+	formatter_class: <class 'argparse.HelpFormatter'>
+	fromfile_prefix_chars: None
+	fs: 128
+	label_path: /home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_only/preprocessed/label/
+	lam: 0.2
+	log_interval: 10
+	lr: 0.0005
+	lr_decayrate: 0.5
+	max_epoch: 100
+	model: DARNet
+	model_save_path: ./exps/cross-subject/DARNet/baseline_task1_AAD_MM-AAD_2025-09-25-17-16-55
+	overlap: 0.5
+	patience: 10
+	prefix_chars: -
+	prog: trainer.py
+	seed: 42
+	start_time: task1_AAD_MM-AAD_2025-09-25-17-16-55
+	subject_number: 40
+	trail_number: 20
+	usage: None
+	weight_decay: 0.0003
+	win_len: 128
+	win_time: 1
+	window_lap: 64.0
+============================================================================================================
+================================================================================
+Subject-wise EEG Data Analysis (Before Normalization)
+================================================================================
+Subject  Mean         Std          Min          Max          Shape
+--------------------------------------------------------------------------------
+S1       -0.087092    0.838319     -3.555122    3.171094     (6580, 32, 128)
+S2       -0.015667    0.920405     -6.080101    21.080916    (6580, 32, 128)
+S3       0.037798     0.863446     -10.331095   8.778871     (6580, 32, 128)
+S4       -0.036634    0.912006     -3.140713    3.754876     (6580, 32, 128)
+S5       -0.021455    0.908250     -2.780793    6.370093     (6580, 32, 128)
+S6       -0.048901    0.906003     -3.465302    8.417639     (6580, 32, 128)
+S7       -0.095609    0.827330     -4.075151    3.845381     (6580, 32, 128)
+S8       0.130262     0.883959     -5.432675    10.593243    (6580, 32, 128)
+S9       -0.015072    0.936471     -4.589751    3.975566     (6580, 32, 128)
+S10      0.070567     0.862163     -4.045451    11.068258    (6580, 32, 128)
+S11      0.043456     0.883261     -6.345919    6.100884     (6580, 32, 128)
+S12      -0.024760    0.936705     -3.432539    3.321965     (6580, 32, 128)
+S13      -0.021850    0.877137     -19.279436   116.919833   (6580, 32, 128)
+S14      -0.086225    0.866940     -6.890489    5.214167     (6580, 32, 128)
+S15      -0.067000    0.932372     -3.229202    3.613753     (6580, 32, 128)
+S16      -0.111945    0.754793     -2.364672    2.898476     (6580, 32, 128)
+S17      0.003688     0.871597     -4.008686    7.225138     (6580, 32, 128)
+S18      -0.028554    0.968749     -3.445942    3.642107     (6580, 32, 128)
+S19      -0.046442    0.852470     -6.711043    6.773293     (6580, 32, 128)
+S20      0.055085     0.834909     -2.972158    2.335026     (6580, 32, 128)
+S21      0.110589     0.814761     -3.606569    6.529827     (6580, 32, 128)
+S22      0.092489     0.891795     -3.366632    9.975513     (6580, 32, 128)
+S23      -0.025434    0.966042     -14.782008   24.171042    (6580, 32, 128)
+S24      -0.051644    0.911890     -3.679970    3.389449     (6580, 32, 128)
+S25      -0.017265    0.983175     -4.034211    4.126140     (6580, 32, 128)
+S26      0.030271     0.949199     -9.693242    9.673704     (6580, 32, 128)
+S27      -0.056962    0.922255     -3.052671    2.536858     (6580, 32, 128)
+S28      0.019699     0.937299     -5.375033    5.309785     (6580, 32, 128)
+S29      0.018599     0.895584     -5.378050    6.537010     (6580, 32, 128)
+S30      0.053141     0.892697     -3.663604    5.578931     (6580, 32, 128)
+--------------------------------------------------------------------------------
+Overall: Mean=0.000000, Std=1.000000
+Overall: Min=-20.323445, Max=123.464769
+
+After Normalization - Subject-wise Statistics:
+--------------------------------------------------------------------------------
+Subject  Mean         Std          Min          Max         
+--------------------------------------------------------------------------------
+S1       0.000000     1.000000     -3.449611    4.313420    
+S2       -0.000000    1.000000     -6.980666    21.008728   
+S3       0.000000     1.000000     -11.081496   8.853078    
+S4       0.000000     1.000000     -3.444267    4.680562    
+S5       0.000000     1.000000     -2.993712    8.413808    
+S6       0.000000     1.000000     -3.885637    8.048603    
+S7       0.000000     1.000000     -5.184400    5.424236    
+S8       -0.000000    1.000000     -5.298681    11.442992   
+S9       -0.000000    1.000000     -4.503863    3.889048    
+S10      0.000000     1.000000     -4.165291    12.979166   
+S11      -0.000000    1.000000     -6.529389    5.916495    
+S12      -0.000000    1.000000     -3.302731    3.828474    
+S13      0.000000     1.000000     -20.323445   123.464769  
+S14      -0.000000    1.000000     -7.360877    5.314148    
+S15      0.000000     1.000000     -3.248024    3.912090    
+S16      -0.000000    1.000000     -2.575623    3.460567    
+S17      0.000000     1.000000     -4.291997    8.941625    
+S18      0.000000     1.000000     -3.566300    3.942970    
+S19      0.000000     1.000000     -6.773910    7.342096    
+S20      0.000000     1.000000     -3.444704    3.232509    
+S21      -0.000000    1.000000     -4.391856    8.137914    
+S22      -0.000000    1.000000     -4.315503    10.133856   
+S23      -0.000000    1.000000     -14.468908   22.284719   
+S24      -0.000000    1.000000     -4.194487    3.859400    
+S25      -0.000000    1.000000     -3.818748    4.336704    
+S26      0.000000     1.000000     -9.520521    9.237392    
+S27      -0.000000    1.000000     -3.032222    3.185768    
+S28      0.000000     1.000000     -5.811977    5.476657    
+S29      -0.000000    1.000000     -6.311115    7.940778    
+S30      -0.000000    1.000000     -3.822316    6.140431    
+================================================================================
+train_data_shape(171080, 32, 128),val_data_shape(26320, 32, 128)
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+DARNet                                   --
+├─TokenEmbedding: 1-1                    --
+│    └─Sequential: 2-1                   --
+│    │    └─Conv2d: 3-1                  576
+│    │    └─BatchNorm2d: 3-2             128
+│    │    └─GELU: 3-3                    --
+│    └─Sequential: 2-2                   --
+│    │    └─Conv2d: 3-4                  32,784
+│    │    └─BatchNorm2d: 3-5             32
+│    │    └─GELU: 3-6                    --
+│    └─PositionalEmbedding: 2-3          --
+├─Flatten: 1-2                           --
+├─Linear: 1-3                            18
+├─AttnRefine: 1-4                        --
+│    └─MyAttention: 2-4                  --
+│    │    └─Attention: 3-7               800
+│    └─Refine: 2-5                       --
+│    │    └─Conv1d: 3-8                  784
+│    │    └─BatchNorm1d: 3-9             32
+│    │    └─ELU: 3-10                    --
+│    │    └─MaxPool1d: 3-11              --
+│    └─AdaptiveAvgPool1d: 2-6            --
+│    └─Linear: 2-7                       68
+│    └─Flatten: 2-8                      --
+├─AttnRefine: 1-5                        --
+│    └─MyAttention: 2-9                  --
+│    │    └─Attention: 3-12              800
+│    └─Refine: 2-10                      --
+│    │    └─Conv1d: 3-13                 784
+│    │    └─BatchNorm1d: 3-14            32
+│    │    └─ELU: 3-15                    --
+│    │    └─MaxPool1d: 3-16              --
+│    └─AdaptiveAvgPool1d: 2-11           --
+│    └─Linear: 2-12                      68
+│    └─Flatten: 2-13                     --
+=================================================================
+Total params: 36,906
+Trainable params: 36,906
+Non-trainable params: 0
+=================================================================
+TestSub: S[15, 16, 17, 18] Epoch  1 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.4891 | Valid Loss 1.2274 | Train Acc 74.5638| Valid Acc 48.6242
+Validation acc increase (0.000000 --> 48.624238) in epoch (1).  Saving model ...
+TestSub: S[15, 16, 17, 18] Epoch  2 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.3543 | Valid Loss 1.5542 | Train Acc 83.5499| Valid Acc 48.1631
+TestSub: S[15, 16, 17, 18] Epoch  3 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.2924 | Valid Loss 1.7408 | Train Acc 87.1316| Valid Acc 47.1456
+TestSub: S[15, 16, 17, 18] Epoch  4 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.2446 | Valid Loss 1.9995 | Train Acc 89.5157| Valid Acc 48.6547
+Validation acc increase (48.624238 --> 48.654726) in epoch (4).  Saving model ...
+TestSub: S[15, 16, 17, 18] Epoch  5 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.2062 | Valid Loss 2.3084 | Train Acc 91.3870| Valid Acc 50.2934
+Validation acc increase (48.654726 --> 50.293445) in epoch (5).  Saving model ...
+TestSub: S[15, 16, 17, 18] Epoch  6 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1754 | Valid Loss 2.4121 | Train Acc 92.8986| Valid Acc 53.1822
+Validation acc increase (50.293445 --> 53.182165) in epoch (6).  Saving model ...
+TestSub: S[15, 16, 17, 18] Epoch  7 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1575 | Valid Loss 2.4021 | Train Acc 93.6512| Valid Acc 52.8582
+TestSub: S[15, 16, 17, 18] Epoch  8 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1405 | Valid Loss 2.5034 | Train Acc 94.4301| Valid Acc 52.0351
+TestSub: S[15, 16, 17, 18] Epoch  9 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1263 | Valid Loss 2.6085 | Train Acc 95.1295| Valid Acc 51.4939
+TestSub: S[15, 16, 17, 18] Epoch 10 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1113 | Valid Loss 2.7377 | Train Acc 95.7482| Valid Acc 51.0938
+TestSub: S[15, 16, 17, 18] Epoch 11 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1004 | Valid Loss 2.9252 | Train Acc 96.2043| Valid Acc 52.7515
+TestSub: S[15, 16, 17, 18] Epoch 12 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0921 | Valid Loss 2.8950 | Train Acc 96.5370| Valid Acc 51.7683
+TestSub: S[15, 16, 17, 18] Epoch 13 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0834 | Valid Loss 2.5562 | Train Acc 96.8949| Valid Acc 51.6730
+TestSub: S[15, 16, 17, 18] Epoch 14 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0773 | Valid Loss 2.9967 | Train Acc 97.1393| Valid Acc 51.7340
+TestSub: S[15, 16, 17, 18] Epoch 15 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0715 | Valid Loss 2.7953 | Train Acc 97.3984| Valid Acc 54.1463
+Validation acc increase (53.182165 --> 54.146341) in epoch (15).  Saving model ...
+TestSub: S[15, 16, 17, 18] Epoch 16 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0680 | Valid Loss 3.2437 | Train Acc 97.5124| Valid Acc 51.8407
+TestSub: S[15, 16, 17, 18] Epoch 17 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0630 | Valid Loss 2.9491 | Train Acc 97.7042| Valid Acc 51.2995
+TestSub: S[15, 16, 17, 18] Epoch 18 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0587 | Valid Loss 3.2517 | Train Acc 97.8826| Valid Acc 50.5450
+TestSub: S[15, 16, 17, 18] Epoch 19 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0571 | Valid Loss 3.3500 | Train Acc 97.9194| Valid Acc 50.2896
+TestSub: S[15, 16, 17, 18] Epoch 20 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0514 | Valid Loss 3.4460 | Train Acc 98.1276| Valid Acc 51.3338
+TestSub: S[15, 16, 17, 18] Epoch 21 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0495 | Valid Loss 3.7145 | Train Acc 98.2118| Valid Acc 49.8514
+TestSub: S[15, 16, 17, 18] Epoch 22 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0501 | Valid Loss 3.6323 | Train Acc 98.1644| Valid Acc 50.7622
+TestSub: S[15, 16, 17, 18] Epoch 23 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0453 | Valid Loss 3.7872 | Train Acc 98.3586| Valid Acc 49.7447
+TestSub: S[15, 16, 17, 18] Epoch 24 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0434 | Valid Loss 3.9681 | Train Acc 98.4194| Valid Acc 51.3338
+TestSub: S[15, 16, 17, 18] Epoch 25 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0419 | Valid Loss 3.6451 | Train Acc 98.4995| Valid Acc 50.9947
+TestSub: S[15, 16, 17, 18] Epoch 26 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0406 | Valid Loss 3.8822 | Train Acc 98.5545| Valid Acc 49.3864
+TestSub: S[15, 16, 17, 18] Epoch 27 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0403 | Valid Loss 3.7854 | Train Acc 98.5837| Valid Acc 50.4078
+TestSub: S[15, 16, 17, 18] Epoch 28 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0364 | Valid Loss 3.7771 | Train Acc 98.7077| Valid Acc 50.1791
+TestSub: S[15, 16, 17, 18] Epoch 29 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0361 | Valid Loss 3.8736 | Train Acc 98.7065| Valid Acc 51.6845
+TestSub: S[15, 16, 17, 18] Epoch 30 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0357 | Valid Loss 3.8522 | Train Acc 98.7240| Valid Acc 49.4970
+TestSub: S[15, 16, 17, 18] Epoch 31 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0340 | Valid Loss 3.7348 | Train Acc 98.8041| Valid Acc 50.0991
+TestSub: S[15, 16, 17, 18] Epoch 32 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0326 | Valid Loss 3.9979 | Train Acc 98.8416| Valid Acc 48.6585
+TestSub: S[15, 16, 17, 18] Epoch 33 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0312 | Valid Loss 4.2260 | Train Acc 98.9147| Valid Acc 49.5770
+TestSub: S[15, 16, 17, 18] Epoch 34 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0312 | Valid Loss 4.1470 | Train Acc 98.9293| Valid Acc 50.6136
+TestSub: S[15, 16, 17, 18] Epoch 35 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0303 | Valid Loss 4.0720 | Train Acc 98.9229| Valid Acc 48.7652
+TestSub: S[15, 16, 17, 18] Epoch 36 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0292 | Valid Loss 4.2941 | Train Acc 98.9837| Valid Acc 49.5579
+TestSub: S[15, 16, 17, 18] Epoch 37 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0281 | Valid Loss 3.9361 | Train Acc 98.9983| Valid Acc 49.2188
+TestSub: S[15, 16, 17, 18] Epoch 38 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0277 | Valid Loss 4.1287 | Train Acc 99.0527| Valid Acc 49.3255
+TestSub: S[15, 16, 17, 18] Epoch 39 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0268 | Valid Loss 4.6678 | Train Acc 99.0720| Valid Acc 49.6456
+TestSub: S[15, 16, 17, 18] Epoch 40 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0266 | Valid Loss 4.2922 | Train Acc 99.0603| Valid Acc 49.0091
+TestSub: S[15, 16, 17, 18] Epoch 41 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0254 | Valid Loss 4.1101 | Train Acc 99.1264| Valid Acc 49.6723
+TestSub: S[15, 16, 17, 18] Epoch 42 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0250 | Valid Loss 4.1551 | Train Acc 99.1609| Valid Acc 48.1479
+TestSub: S[15, 16, 17, 18] Epoch 43 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0247 | Valid Loss 4.1385 | Train Acc 99.1486| Valid Acc 50.2439
+TestSub: S[15, 16, 17, 18] Epoch 44 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0243 | Valid Loss 3.8795 | Train Acc 99.1579| Valid Acc 49.5541
+TestSub: S[15, 16, 17, 18] Epoch 45 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0235 | Valid Loss 4.0149 | Train Acc 99.2106| Valid Acc 49.4893
+TestSub: S[15, 16, 17, 18] Epoch 46 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0228 | Valid Loss 3.7598 | Train Acc 99.2006| Valid Acc 49.8171
+TestSub: S[15, 16, 17, 18] Epoch 47 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0217 | Valid Loss 4.4036 | Train Acc 99.2655| Valid Acc 49.8438
+TestSub: S[15, 16, 17, 18] Epoch 48 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0224 | Valid Loss 3.9969 | Train Acc 99.2275| Valid Acc 49.4322
+TestSub: S[15, 16, 17, 18] Epoch 49 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0216 | Valid Loss 3.7984 | Train Acc 99.2597| Valid Acc 49.1768
+TestSub: S[15, 16, 17, 18] Epoch 50 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0219 | Valid Loss 3.9358 | Train Acc 99.2375| Valid Acc 49.7180
+TestSub: S[15, 16, 17, 18] Epoch 51 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0205 | Valid Loss 3.8901 | Train Acc 99.3070| Valid Acc 47.6067
+TestSub: S[15, 16, 17, 18] Epoch 52 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0183 | Valid Loss 4.0574 | Train Acc 99.3614| Valid Acc 47.9192
+TestSub: S[15, 16, 17, 18] Epoch 53 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0202 | Valid Loss 4.2017 | Train Acc 99.3041| Valid Acc 48.9977
+TestSub: S[15, 16, 17, 18] Epoch 54 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0189 | Valid Loss 4.2114 | Train Acc 99.3521| Valid Acc 47.9649
+TestSub: S[15, 16, 17, 18] Epoch 55 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0195 | Valid Loss 3.9246 | Train Acc 99.3556| Valid Acc 47.5686
+TestSub: S[15, 16, 17, 18] Epoch 56 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0189 | Valid Loss 3.8718 | Train Acc 99.3568| Valid Acc 50.0381
+TestSub: S[15, 16, 17, 18] Epoch 57 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0171 | Valid Loss 4.3541 | Train Acc 99.4263| Valid Acc 48.8681
+TestSub: S[15, 16, 17, 18] Epoch 58 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0187 | Valid Loss 4.0945 | Train Acc 99.3568| Valid Acc 49.2912
+TestSub: S[15, 16, 17, 18] Epoch 59 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0172 | Valid Loss 4.3001 | Train Acc 99.3895| Valid Acc 49.2226
+TestSub: S[15, 16, 17, 18] Epoch 60 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0166 | Valid Loss 4.4758 | Train Acc 99.4211| Valid Acc 49.2492
+TestSub: S[15, 16, 17, 18] Epoch 61 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0175 | Valid Loss 4.1597 | Train Acc 99.4281| Valid Acc 48.9329
+TestSub: S[15, 16, 17, 18] Epoch 62 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0169 | Valid Loss 4.0145 | Train Acc 99.4076| Valid Acc 49.4627
+TestSub: S[15, 16, 17, 18] Epoch 63 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0163 | Valid Loss 4.0613 | Train Acc 99.4480| Valid Acc 48.3232
+TestSub: S[15, 16, 17, 18] Epoch 64 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0163 | Valid Loss 4.3176 | Train Acc 99.4620| Valid Acc 49.7370
+TestSub: S[15, 16, 17, 18] Epoch 65 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0159 | Valid Loss 4.3813 | Train Acc 99.4427| Valid Acc 48.1021
+TestSub: S[15, 16, 17, 18] Epoch 66 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0165 | Valid Loss 3.9764 | Train Acc 99.4316| Valid Acc 49.0968
+TestSub: S[15, 16, 17, 18] Epoch 67 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0150 | Valid Loss 4.2325 | Train Acc 99.5100| Valid Acc 49.5503
+TestSub: S[15, 16, 17, 18] Epoch 68 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0148 | Valid Loss 4.3640 | Train Acc 99.4959| Valid Acc 51.3453
+TestSub: S[15, 16, 17, 18] Epoch 69 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0146 | Valid Loss 4.3843 | Train Acc 99.4901| Valid Acc 49.0854
+TestSub: S[15, 16, 17, 18] Epoch 70 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0149 | Valid Loss 4.0380 | Train Acc 99.5141| Valid Acc 49.7637
+TestSub: S[15, 16, 17, 18] Epoch 71 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0145 | Valid Loss 4.3102 | Train Acc 99.5029| Valid Acc 50.8575
+TestSub: S[15, 16, 17, 18] Epoch 72 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0147 | Valid Loss 4.1883 | Train Acc 99.4948| Valid Acc 49.4970
+TestSub: S[15, 16, 17, 18] Epoch 73 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0137 | Valid Loss 4.4434 | Train Acc 99.5363| Valid Acc 49.2302
+TestSub: S[15, 16, 17, 18] Epoch 74 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0134 | Valid Loss 4.3991 | Train Acc 99.5328| Valid Acc 49.0587
+TestSub: S[15, 16, 17, 18] Epoch 75 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0139 | Valid Loss 4.3135 | Train Acc 99.5205| Valid Acc 49.7218
+TestSub: S[15, 16, 17, 18] Epoch 76 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0132 | Valid Loss 4.2881 | Train Acc 99.5427| Valid Acc 50.0953
+TestSub: S[15, 16, 17, 18] Epoch 77 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0131 | Valid Loss 4.0163 | Train Acc 99.5614| Valid Acc 51.4062
+TestSub: S[15, 16, 17, 18] Epoch 78 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0135 | Valid Loss 4.4140 | Train Acc 99.5503| Valid Acc 49.8323
+TestSub: S[15, 16, 17, 18] Epoch 79 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0129 | Valid Loss 4.3017 | Train Acc 99.5737| Valid Acc 50.2934
+TestSub: S[15, 16, 17, 18] Epoch 80 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0126 | Valid Loss 4.3968 | Train Acc 99.5661| Valid Acc 49.7370
+TestSub: S[15, 16, 17, 18] Epoch 81 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0121 | Valid Loss 4.2494 | Train Acc 99.6012| Valid Acc 50.1067
+TestSub: S[15, 16, 17, 18] Epoch 82 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0125 | Valid Loss 4.4924 | Train Acc 99.5924| Valid Acc 50.8498
+TestSub: S[15, 16, 17, 18] Epoch 83 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0125 | Valid Loss 4.4330 | Train Acc 99.5924| Valid Acc 49.4245
+TestSub: S[15, 16, 17, 18] Epoch 84 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0124 | Valid Loss 4.3036 | Train Acc 99.5813| Valid Acc 48.8377
+TestSub: S[15, 16, 17, 18] Epoch 85 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0131 | Valid Loss 4.1991 | Train Acc 99.5591| Valid Acc 50.3887
+TestSub: S[15, 16, 17, 18] Epoch 86 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0121 | Valid Loss 4.2565 | Train Acc 99.6000| Valid Acc 50.6098
+TestSub: S[15, 16, 17, 18] Epoch 87 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0117 | Valid Loss 4.0790 | Train Acc 99.5948| Valid Acc 50.4573
+TestSub: S[15, 16, 17, 18] Epoch 88 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0117 | Valid Loss 4.2327 | Train Acc 99.6076| Valid Acc 50.1448
+TestSub: S[15, 16, 17, 18] Epoch 89 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0111 | Valid Loss 4.1919 | Train Acc 99.6287| Valid Acc 49.8857
+TestSub: S[15, 16, 17, 18] Epoch 90 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0111 | Valid Loss 4.3114 | Train Acc 99.6222| Valid Acc 50.3163
+TestSub: S[15, 16, 17, 18] Epoch 91 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0111 | Valid Loss 4.2560 | Train Acc 99.6339| Valid Acc 49.9009
+TestSub: S[15, 16, 17, 18] Epoch 92 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0116 | Valid Loss 4.4825 | Train Acc 99.6158| Valid Acc 48.9748
+TestSub: S[15, 16, 17, 18] Epoch 93 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0114 | Valid Loss 4.5706 | Train Acc 99.6234| Valid Acc 49.1044
+TestSub: S[15, 16, 17, 18] Epoch 94 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0106 | Valid Loss 4.4241 | Train Acc 99.6339| Valid Acc 50.5259
+TestSub: S[15, 16, 17, 18] Epoch 95 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0112 | Valid Loss 4.3758 | Train Acc 99.6281| Valid Acc 50.0305
+TestSub: S[15, 16, 17, 18] Epoch 96 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0099 | Valid Loss 4.4132 | Train Acc 99.6690| Valid Acc 50.6631
+TestSub: S[15, 16, 17, 18] Epoch 97 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0116 | Valid Loss 4.3957 | Train Acc 99.6111| Valid Acc 51.4024
+TestSub: S[15, 16, 17, 18] Epoch 98 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0099 | Valid Loss 4.5166 | Train Acc 99.6649| Valid Acc 50.2744
+TestSub: S[15, 16, 17, 18] Epoch 99 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0095 | Valid Loss 4.5840 | Train Acc 99.6684| Valid Acc 51.5206
+TestSub: S[15, 16, 17, 18] Epoch 100 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0106 | Valid Loss 4.7610 | Train Acc 99.6427| Valid Acc 50.6860
+--------------------------------------------------
+Test_Subject :S[15, 16, 17, 18] |Best epoch:15 | Test Loss:2.7953 | Best Acc 54.1463 | Savemodel Acc 54.1463
+--------------------------------------------------
+lr:0.0005 -> bs:128
+Cross Subject -> val_ids: [15, 16, 17, 18]
+Cross Subject -> Result ACC mean: 54.1463
+============================================================================================================
+end time: 25-09-25-19:09:54

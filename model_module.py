@@ -136,7 +136,7 @@ class DARNet(nn.Module):
         channel_size = args.eeg_channel
         d_model = 16
         emb_size = d_model
-        num_heads = 8
+        num_heads = 16
 
         self.token_embedding = TokenEmbedding(c_in=channel_size, d_model=d_model)
 
