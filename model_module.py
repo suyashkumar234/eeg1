@@ -1,6 +1,45 @@
 import math
 import torch
 from torch import nn
+from torch.autograd import Function
+
+
+class GradientReversalFunction(Function):
+    @staticmethod
+    def forward(ctx, x, lambda_):
+        ctx.lambda_ = lambda_
+        return x.view_as(x)
+    
+    @staticmethod
+    def backward(ctx, grad_output):
+        output = grad_output.neg() * ctx.lambda_
+        return output, None
+
+
+class GradientReversalLayer(nn.Module):
+    def __init__(self, lambda_=1.0):
+        super().__init__()
+        self.lambda_ = lambda_
+    
+    def forward(self, x):
+        return GradientReversalFunction.apply(x, self.lambda_)
+
+
+class SubjectDiscriminator(nn.Module):
+    def __init__(self, feature_dim, num_subjects=30):
+        super().__init__()
+        self.classifier = nn.Sequential(
+            nn.Linear(feature_dim, 256),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(128, num_subjects)
+        )
+    
+    def forward(self, x):
+        return self.classifier(x)
 
 
 class Attention(nn.Module):
@@ -144,6 +183,13 @@ class DARNet(nn.Module):
         self.out = nn.Linear(8, 2)
         self.stack1 = AttnRefine(emb_size, num_heads)
         self.stack2 = AttnRefine(emb_size, num_heads)
+        
+        # Domain Adversarial Components
+        self.use_domain_adversarial = getattr(args, 'use_domain_adversarial', False)
+        if self.use_domain_adversarial:
+            self.lambda_domain = getattr(args, 'lambda_domain', 0.1)
+            self.gradient_reversal = GradientReversalLayer(lambda_=self.lambda_domain)
+            self.subject_discriminator = SubjectDiscriminator(feature_dim=8, num_subjects=30)
 
     def forward(self, x):
         x_src = self.token_embedding(x)
@@ -155,7 +201,21 @@ class DARNet(nn.Module):
         x_src2, new_src2 = self.stack2(x_src1)
         new_x.append(new_src2)
 
-        out = torch.cat(new_x, -1)
-        out = self.flatten(out)
-        out = self.out(out)
-        return out
+        # Extract features before final classification
+        features = torch.cat(new_x, -1)
+        features_flat = self.flatten(features)
+        
+        # Attention classification (main task)
+        attention_logits = self.out(features_flat)
+        
+        # Subject discrimination (domain adversarial task)
+        if self.use_domain_adversarial and self.training:
+            reversed_features = self.gradient_reversal(features_flat)
+            subject_logits = self.subject_discriminator(reversed_features)
+            return attention_logits, subject_logits
+        
+        return attention_logits
+    
+    def update_lambda(self, lambda_value):
+        if self.use_domain_adversarial:
+            self.gradient_reversal.lambda_ = lambda_value

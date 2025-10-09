@@ -11,17 +11,22 @@ def makePath(path):
 
 
 class CustomDatasets(Dataset):
-    def __init__(self, data, event_data):
+    def __init__(self, data, event_data, subject_ids=None):
         self.data = data
         self.label = event_data
+        self.subject_ids = subject_ids
 
     def __len__(self):
         return len(self.label)
 
     def __getitem__(self, index):
-        data = torch.Tensor(self.data[index])
+        data = torch.Tensor(self.data[index]) 
         label = torch.LongTensor(self.label[index])
-
+        
+        if self.subject_ids is not None:
+            subject_id = torch.LongTensor([self.subject_ids[index]])
+            return data, label, subject_id
+        
         return data, label
 
 class EEGDataLoader(Dataset):
