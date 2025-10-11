@@ -23,17 +23,48 @@ from utils import *
 from collections import OrderedDict
 from model_module import DARNet
 
-#os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#print("Current device is", device)
+def set_all_seeds(seed):
+    """Set all possible seeds for reproducibility"""
+    import random
+    import os
+    
+    # Python random seed
+    random.seed(seed)
+    
+    # Numpy seed
+    np.random.seed(seed)
+    
+    # PyTorch seeds
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # For multi-GPU
+    
+    # PyTorch deterministic behavior
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    
+    # Python hash seed
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    
+    # Set worker seed for DataLoader
+    def worker_init_fn(worker_id):
+        np.random.seed(seed + worker_id)
+    
+    return worker_init_fn
+
+def get_device():
+    """Get the best available device: CUDA, MPS (Apple Silicon), or CPU"""
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+        return torch.device("mps")
+    else:
+        return torch.device("cpu")
 
 if "SLURM_JOB_GPUS" in os.environ:
     os.environ["CUDA_VISIBLE_DEVICES"] = os.environ["SLURM_JOB_GPUS"]
 
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = get_device()
 print("Current device is", device)
 
 def makePath(path):
@@ -67,7 +98,7 @@ class StepwiseLR_GRL:
         self.iter_num += 1
 
 class Trynetwork():
-    def __init__(self, model, train_loader, valid_loader, test_loader, batch_size, lr, weight_decay):
+    def __init__(self, model, train_loader, valid_loader, test_loader, batch_size, lr, weight_decay, worker_init_fn):
         self.model = model
         self.datasets = OrderedDict((("train", train_loader), ("valid", valid_loader), ("test", test_loader)))
         if valid_loader is None:
@@ -78,8 +109,9 @@ class Trynetwork():
         self.batch_size = batch_size
         self.lr = lr
         self.weight_decay = weight_decay
+        self.worker_init_fn = worker_init_fn
         
-        #self.optimizer = torch.optim.AdamW(params=self.model.parameters(), lr=self.lr,weight_decay=self.weight_decay)
+        # Create optimizer based on args
         if args.optimizer == 'SGD':
             self.optimizer = torch.optim.SGD(params=self.model.parameters(), lr=self.lr, 
                                            momentum=getattr(args, 'momentum', 0.9), 
@@ -96,6 +128,7 @@ class Trynetwork():
             self.optimizer = torch.optim.AdamW(params=self.model.parameters(), lr=self.lr,
                                              betas=(getattr(args, 'beta1', 0.9), getattr(args, 'beta2', 0.999)),
                                              weight_decay=self.weight_decay)
+
         self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[10, 35], gamma=0.5)
         self.scheduler_down = StepwiseLR_GRL(self.optimizer, init_lr= args.lr, gamma= 10, decay_rate=args.lr_decayrate,max_iter=args.max_epoch)
         self.criterion = nn.CrossEntropyLoss()
@@ -145,14 +178,14 @@ class Trynetwork():
         for i_batch, batch_data in enumerate(self.datasets['train']):
             if len(batch_data) == 3:  # Domain adversarial training
                 train_data, train_label, subject_ids = batch_data
-                subject_ids = subject_ids.squeeze(-1).cuda().long()
+                subject_ids = subject_ids.squeeze(-1).to(device).long()
                 use_domain_adversarial = True
             else:  # Regular training
                 train_data, train_label = batch_data
                 use_domain_adversarial = False
                 
             train_label = train_label.squeeze(-1)
-            train_data, train_label = train_data.cuda().float(), train_label.cuda().long()
+            train_data, train_label = train_data.to(device).float(), train_label.to(device).long()
 
             # Forward pass
             if use_domain_adversarial and self.model.use_domain_adversarial:
@@ -205,8 +238,8 @@ class Trynetwork():
     def test_batch(self, input, label):
         self.model.eval()
         with torch.no_grad():
-            val_input = input.cuda().float()
-            val_label = label.cuda().long()
+            val_input = input.to(device).float()
+            val_label = label.to(device).long()
             
             # Model returns only attention logits during evaluation
             model_output = self.model(val_input)
@@ -272,17 +305,20 @@ class Trynetwork():
                 
             train_loss, train_acc = self.train_step()
             val_loss, val_acc = self.evaluate_step(False)
-            # self.scheduler_down.step()
             
             if hasattr(self.model, 'use_domain_adversarial') and self.model.use_domain_adversarial:
+                # Get domain loss from the latest training step
+                domain_loss_val = self.train_df['domain_loss'].iloc[-1] if 'domain_loss' in self.train_df.columns else 0.0
+
                 print('TestSub:', testsub_name,
-                      'Epoch {:2d} Finsh | Now_lr {:2.4f}/{:2.4f} | Lambda {:2.4f} | Train Loss {:2.4f} | Valid Loss {:2.4f} | Train Acc {:5.4f}| Valid Acc {:5.4f}'.format(epoch,
-                                                                                                                                                    self.optimizer.param_groups[0]["lr"], args.lr,
-                                                                                                                                                    lambda_p,
-                                                                                                                                                    train_loss,
-                                                                                                                                                    val_loss,
-                                                                                                                                                    train_acc,
-                                                                                                                                                    val_acc))
+                'Epoch {:2d} Finsh | Now_lr {:2.4f}/{:2.4f} | Lambda {:2.4f} | Train Loss {:2.4f} | Domain Loss {:2.4f} | Valid Loss {:2.4f} | Train Acc {:5.4f}| Valid Acc {:5.4f}'.format(epoch,
+                                                   self.optimizer.param_groups[0]["lr"], args.lr,
+                                                   lambda_p,
+                                                   train_loss,
+                                                   domain_loss_val,
+                                                   val_loss,
+                                                   train_acc,
+                                                   val_acc))
             else:
                 print('TestSub:', testsub_name,
                       'Epoch {:2d} Finsh | Now_lr {:2.4f}/{:2.4f}|Train Loss {:2.4f} | Valid Loss {:2.4f} | Train Acc {:5.4f}| Valid Acc {:5.4f}'.format(epoch,
@@ -320,7 +356,7 @@ class Trynetwork():
     
 
 
-def cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel):
+def cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel, worker_init_fn):
     tempt_data, tempt_label = copy.deepcopy(seq_alldata), copy.deepcopy(alllabel)
 
     # get val data
@@ -368,26 +404,31 @@ def cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel):
     
     if use_domain_adversarial:
         train_loader = DataLoader(dataset=CustomDatasets(train_data, train_label, train_subject_ids),
-                                      batch_size=args.batch_size, drop_last=True, shuffle=True)
+                                      batch_size=args.batch_size, drop_last=True, shuffle=True,
+                                      worker_init_fn=worker_init_fn, num_workers=0)  # num_workers=0 for determinism
         valid_loader = DataLoader(dataset=CustomDatasets(val_data, val_label, val_subject_ids),
-                                      batch_size=args.batch_size, drop_last=True)
+                                      batch_size=args.batch_size, drop_last=True,
+                                      worker_init_fn=worker_init_fn, num_workers=0)
     else:
         train_loader = DataLoader(dataset=CustomDatasets(train_data, train_label),
-                                      batch_size=args.batch_size, drop_last=True, shuffle=True)
+                                      batch_size=args.batch_size, drop_last=True, shuffle=True,
+                                      worker_init_fn=worker_init_fn, num_workers=0)
         valid_loader = DataLoader(dataset=CustomDatasets(val_data, val_label),
-                                      batch_size=args.batch_size, drop_last=True)
+                                      batch_size=args.batch_size, drop_last=True,
+                                      worker_init_fn=worker_init_fn, num_workers=0)
     
     #####################################################################################
     #2.define model
     #####################################################################################
-    BaselineNet =Trynetwork(
-        model = DARNet(args).cuda(),
+    BaselineNet = Trynetwork(
+        model = DARNet(args).to(device),
         train_loader=train_loader, 
         valid_loader=valid_loader, 
         test_loader=None,
         batch_size = args.batch_size, 
         lr = args.lr,
-        weight_decay = args.weight_decay)
+        weight_decay = args.weight_decay,
+        worker_init_fn = worker_init_fn)
     model_val_acc = BaselineNet.train(args, val_ids)
     return model_val_acc
 
@@ -396,17 +437,17 @@ if __name__ == '__main__':
     # Training settings
     args = argparse.ArgumentParser()
     args.seed = 42
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
-    torch.cuda.manual_seed(args.seed)
+    
+    # Set all seeds for reproducibility
+    print(f"Setting all seeds to {args.seed} for reproducibility...")
+    worker_init_fn = set_all_seeds(args.seed)
+    print("All seeds set successfully!")
 
     # data
     args.dataset = 'MM-AAD'
     args.start_time = datetime.now().strftime(f"task1_AAD_{args.dataset}_trainer3_%Y-%m-%d-%H-%M-%S")
     print('start time:',args.start_time)
     options = {'MM-AAD':[40 ,32, 20, 128, "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/data/", "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/label/"]}
-    #options = {'MM-AAD':[40 ,32, 20, 128, "eeg-aad-challenge2025-task1-baselines-master/data/", "eeg-aad-challenge2025-task1-baselines-master/label/"]}
-    #options = {'MM-AAD':[40 ,32, 20, 128, "eeg-aad-challenge2025-task1-baselines-master/data/", "eeg-aad-challenge2025-task1-baselines-master/label/"]}
     args.subject_number = options[args.dataset][0]
     args.eeg_channel = options[args.dataset][1]
     args.trail_number = options[args.dataset][2]
@@ -414,36 +455,31 @@ if __name__ == '__main__':
     args.data_path = options[args.dataset][4]
     args.label_path = options[args.dataset][5]
 
-    args.win_time = 1.5
+    args.win_time = 2
     args.win_len = math.ceil(args.fs * args.win_time)
     args.overlap = 0.5
     args.window_lap = args.win_len * (1 - args.overlap)
 
     # basic info of the model
+    args.optimizer='SGD'
     args.model = "DARNet"
-    # args.batch_size = 64
-    # args.lr = 3e-4
+    args.batch_size = 128
+    args.lr = 1e-2
     args.lam = 0.2
-    # args.lr_decayrate = 0.5
-    # args.weight_decay = 5e-4
-    args.lr = 3e-3
-    args.batch_size = 64
-    args.lambda_domain = 0.08
-    args.lr_decayrate = 0.6
-    args.optimizer = 'RMSprop'
-    args.alpha = 0.99
-    args.weight_decay = 5e-4
+    args.lr_decayrate = 0.75
+    args.momentum=0.9
+    args.weight_decay = 1e-3
     args.max_epoch = 100
     args.patience = 10
     args.log_interval = 10
     
     # Domain Adversarial Training parameters
     args.use_domain_adversarial = True  # Enable domain adversarial training
-    #args.lambda_domain = 0.5  # Domain adversarial weight (start small)
+    args.lambda_domain = 0.15  # Domain adversarial weight (start small)
     
     # save to 
     filename = "./exps/cross-subject/%s/" % args.model
-    args.model_save_path = f'{filename}baseline_%s' % args.start_time
+    args.model_save_path = f'{filename}baseline_%s/' % args.start_time
     makePath(args.model_save_path)
     args.fig_path = f'{filename}figures/' 
     makePath(args.fig_path)
@@ -479,7 +515,7 @@ if __name__ == '__main__':
         print(f"Train IDs: {train_ids}")
         print(f"Val IDs:   {val_ids}")
 
-        fold_acc = cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel)
+        fold_acc = cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel, worker_init_fn)
         all_fold_acc.append(fold_acc)
 
     mean_acc = np.mean(all_fold_acc)
