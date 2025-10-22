@@ -149,7 +149,7 @@ class EEGFullDARNetDecoder(nn.Module):
         self.seq_len = seq_len
         self.c_out = c_out
         
-        # Expand compressed features to intermediate representation
+        
         self.feature_expand = nn.Sequential(
             nn.Linear(feature_dim, 256),
             nn.ReLU(),
@@ -160,7 +160,7 @@ class EEGFullDARNetDecoder(nn.Module):
             nn.Linear(512, 64 * seq_len)  # 64 channels × 128 time steps
         )
         
-        # Temporal upsampling layers
+
         self.temporal_conv1 = nn.Sequential(
             nn.Conv1d(64, 128, kernel_size=3, padding=1),
             nn.BatchNorm1d(128),
@@ -201,70 +201,70 @@ class EEGFullDARNetDecoder(nn.Module):
         return reconstructed
 
 
-class EEGUNetDecoder(nn.Module):
-    """U-Net style decoder with skip connections for EEG reconstruction"""
-    def __init__(self, feature_dim=16, c_out=32, seq_len=128):
-        super().__init__()
-        self.seq_len = seq_len
+# class EEGUNetDecoder(nn.Module):
+#     """U-Net style decoder with skip connections for EEG reconstruction"""
+#     def __init__(self, feature_dim=16, c_out=32, seq_len=128):
+#         super().__init__()
+#         self.seq_len = seq_len
         
-        # Decoder layers with transpose convolutions
-        self.upconv1 = nn.ConvTranspose1d(feature_dim, 32, kernel_size=3, stride=1, padding=1)
-        self.bn1 = nn.BatchNorm1d(32)
+#         # Decoder layers with transpose convolutions
+#         self.upconv1 = nn.ConvTranspose1d(feature_dim, 32, kernel_size=3, stride=1, padding=1)
+#         self.bn1 = nn.BatchNorm1d(32)
         
-        # After concatenation with skip2: 32 + 16 = 48 channels
-        self.conv1 = nn.Conv1d(48, 32, kernel_size=3, padding=1)
-        self.bn1_conv = nn.BatchNorm1d(32)
+#         # After concatenation with skip2: 32 + 16 = 48 channels
+#         self.conv1 = nn.Conv1d(48, 32, kernel_size=3, padding=1)
+#         self.bn1_conv = nn.BatchNorm1d(32)
         
-        self.upconv2 = nn.ConvTranspose1d(32, 64, kernel_size=3, stride=1, padding=1)
-        self.bn2 = nn.BatchNorm1d(64)
+#         self.upconv2 = nn.ConvTranspose1d(32, 64, kernel_size=3, stride=1, padding=1)
+#         self.bn2 = nn.BatchNorm1d(64)
         
-        # After concatenation with skip1: 64 + 2048 = 2112 channels (64*32 from spatial flattening)
-        self.conv2 = nn.Conv1d(64 + 2048, 64, kernel_size=3, padding=1)
-        self.bn2_conv = nn.BatchNorm1d(64)
+#         # After concatenation with skip1: 64 + 2048 = 2112 channels (64*32 from spatial flattening)
+#         self.conv2 = nn.Conv1d(64 + 2048, 64, kernel_size=3, padding=1)
+#         self.bn2_conv = nn.BatchNorm1d(64)
         
-        # Final reconstruction layer
-        self.final_conv = nn.Conv1d(64, c_out, kernel_size=1)
+#         # Final reconstruction layer
+#         self.final_conv = nn.Conv1d(64, c_out, kernel_size=1)
         
-        self.activation = nn.ReLU()
-        self.dropout = nn.Dropout(0.1)
+#         self.activation = nn.ReLU()
+#         self.dropout = nn.Dropout(0.1)
         
-    def forward(self, features, skip1, skip2):
-        """
-        features: [batch, seq_len, feature_dim] - main features from encoder
-        skip1: [batch, 2048, seq_len] - early encoder features (flattened spatial)
-        skip2: [batch, 16, seq_len] - later encoder features
-        """
-        # Convert features to conv format: [batch, feature_dim, seq_len]
-        x = features.permute(0, 2, 1)  # [batch, 16, 128]
+#     def forward(self, features, skip1, skip2):
+#         """
+#         features: [batch, seq_len, feature_dim] - main features from encoder
+#         skip1: [batch, 2048, seq_len] - early encoder features (flattened spatial)
+#         skip2: [batch, 16, seq_len] - later encoder features
+#         """
+#         # Convert features to conv format: [batch, feature_dim, seq_len]
+#         x = features.permute(0, 2, 1)  # [batch, 16, 128]
         
-        # First upsampling block
-        x = self.upconv1(x)  # [batch, 32, 128]
-        x = self.bn1(x)
-        x = self.activation(x)
+#         # First upsampling block
+#         x = self.upconv1(x)  # [batch, 32, 128]
+#         x = self.bn1(x)
+#         x = self.activation(x)
         
-        # Concatenate with skip2 connection
-        x = torch.cat([x, skip2], dim=1)  # [batch, 32+16=48, 128]
-        x = self.conv1(x)  # [batch, 32, 128]
-        x = self.bn1_conv(x)
-        x = self.activation(x)
-        x = self.dropout(x)
+#         # Concatenate with skip2 connection
+#         x = torch.cat([x, skip2], dim=1)  # [batch, 32+16=48, 128]
+#         x = self.conv1(x)  # [batch, 32, 128]
+#         x = self.bn1_conv(x)
+#         x = self.activation(x)
+#         x = self.dropout(x)
         
-        # Second upsampling block
-        x = self.upconv2(x)  # [batch, 64, 128]
-        x = self.bn2(x)
-        x = self.activation(x)
+#         # Second upsampling block
+#         x = self.upconv2(x)  # [batch, 64, 128]
+#         x = self.bn2(x)
+#         x = self.activation(x)
         
-        # Concatenate with skip1 connection
-        x = torch.cat([x, skip1], dim=1)  # [batch, 64+2048=2112, 128]
-        x = self.conv2(x)  # [batch, 64, 128]
-        x = self.bn2_conv(x)
-        x = self.activation(x)
-        x = self.dropout(x)
+#         # Concatenate with skip1 connection
+#         x = torch.cat([x, skip1], dim=1)  # [batch, 64+2048=2112, 128]
+#         x = self.conv2(x)  # [batch, 64, 128]
+#         x = self.bn2_conv(x)
+#         x = self.activation(x)
+#         x = self.dropout(x)
         
-        # Final reconstruction
-        reconstructed = self.final_conv(x)  # [batch, 32, 128]
+#         # Final reconstruction
+#         reconstructed = self.final_conv(x)  # [batch, 32, 128]
         
-        return reconstructed
+#         return reconstructed
 
 
 class Refine(nn.Module):

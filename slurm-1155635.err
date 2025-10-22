@@ -1,0 +1,8 @@
+/home/suyash.kumar.mec22.itbhu/.conda/envs/eegenv/lib/python3.9/site-packages/torch/nn/modules/conv.py:459: UserWarning: Using padding='same' with even kernel lengths and odd dilation may require a zero-padded copy of the input be created (Triggered internally at ../aten/src/ATen/native/Convolution.cpp:1003.)
+  return F.conv2d(input, weight, bias, self.stride,
+Traceback (most recent call last):
+  File "/scratch/suyash.kumar.mec22.itbhu/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master/trainer.py", line 655, in <module>
+    fold_acc = cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel, worker_init_fn, ssl_model_path)
+  File "/scratch/suyash.kumar.mec22.itbhu/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master/trainer.py", line 529, in cross_subject
+    train_loader = DataLoader(dataset=CustomDatasets(train_data, train_label, train_subject_ids),
+TypeError: __init__() takes 3 positional arguments but 4 were given

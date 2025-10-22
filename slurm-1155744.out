@@ -1,0 +1,958 @@
+==========================================
+SLURM_CLUSTER_NAME = param-shivay
+SLURM_ARRAY_JOB_ID = 
+SLURM_ARRAY_TASK_ID = 
+SLURM_ARRAY_TASK_COUNT = 
+SLURM_ARRAY_TASK_MAX = 
+SLURM_ARRAY_TASK_MIN = 
+SLURM_JOB_ACCOUNT = mechanical_engg
+SLURM_JOB_ID = 1155744
+SLURM_JOB_NAME = eeg-train
+SLURM_JOB_NODELIST = gpu006
+SLURM_JOB_USER = suyash.kumar.mec22.itbhu
+SLURM_JOB_UID = 6339
+SLURM_JOB_PARTITION = gpu
+SLURM_TASK_PID = 15593
+SLURM_SUBMIT_DIR = /scratch/suyash.kumar.mec22.itbhu/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master
+SLURM_CPUS_ON_NODE = 8
+SLURM_NTASKS = 
+SLURM_TASK_PID = 15593
+==========================================
+Current device is cuda
+Setting all seeds to 42 for reproducibility...
+All seeds set successfully!
+start time: task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39
+============================================================================================================
+Arguments =
+	_action_groups: [<argparse._ArgumentGroup object at 0x7fd5a973abe0>, <argparse._ArgumentGroup object at 0x7fd5a973aee0>]
+	_actions: [_HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None)]
+	_defaults: {}
+	_has_negative_number_optionals: []
+	_mutually_exclusive_groups: []
+	_negative_number_matcher: re.compile('^-\\d+$|^-\\d*\\.\\d+$')
+	_option_string_actions: {'-h': _HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None), '--help': _HelpAction(option_strings=['-h', '--help'], dest='help', nargs=0, const=None, default='==SUPPRESS==', type=None, choices=None, required=False, help='show this help message and exit', metavar=None)}
+	_optionals: <argparse._ArgumentGroup object at 0x7fd5a973aee0>
+	_positionals: <argparse._ArgumentGroup object at 0x7fd5a973abe0>
+	_registries: {'action': {None: <class 'argparse._StoreAction'>, 'store': <class 'argparse._StoreAction'>, 'store_const': <class 'argparse._StoreConstAction'>, 'store_true': <class 'argparse._StoreTrueAction'>, 'store_false': <class 'argparse._StoreFalseAction'>, 'append': <class 'argparse._AppendAction'>, 'append_const': <class 'argparse._AppendConstAction'>, 'count': <class 'argparse._CountAction'>, 'help': <class 'argparse._HelpAction'>, 'version': <class 'argparse._VersionAction'>, 'parsers': <class 'argparse._SubParsersAction'>, 'extend': <class 'argparse._ExtendAction'>}, 'type': {None: <function ArgumentParser.__init__.<locals>.identity at 0x7fd594c361f0>}}
+	_subparsers: None
+	add_help: True
+	allow_abbrev: True
+	alpha: 0.99
+	argument_default: None
+	batch_size: 128
+	beta1: 0.9
+	beta2: 0.999
+	conflict_handler: error
+	data_path: /home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/data/
+	dataset: MM-AAD
+	description: None
+	eeg_channel: 32
+	epilog: None
+	exit_on_error: True
+	fig_path: ./exps/cross-subject/DARNet_SSL_FullDARNet/figures/
+	formatter_class: <class 'argparse.HelpFormatter'>
+	fromfile_prefix_chars: None
+	fs: 128
+	label_path: /home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/label/
+	lam: 0.2
+	log_interval: 10
+	lr: 0.0005
+	lr_decayrate: 0.5
+	max_epoch: 100
+	model: DARNet_SSL_FullDARNet
+	model_save_path: ./exps/cross-subject/DARNet_SSL_FullDARNet/baseline_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/
+	momentum: 0.9
+	optimizer: AdamW
+	overlap: 0.5
+	patience: 10
+	prefix_chars: -
+	prog: trainer.py
+	seed: 42
+	ssl_approach: full_darnet
+	ssl_enabled: True
+	ssl_epochs: 30
+	ssl_lr: 0.001
+	ssl_model_save_path: ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/
+	start_time: task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39
+	subject_number: 40
+	trail_number: 20
+	usage: None
+	weight_decay: 0.0003
+	win_len: 128
+	win_time: 1
+	window_lap: 64.0
+============================================================================================================
+
+========== Fold 1 ==========
+Train IDs: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+Val IDs:   [1, 2, 3, 4, 5]
+================================================================================
+SSL PRE-TRAINING PHASE
+================================================================================
+Loading SSL data for subjects: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+Loaded subject S6: (6580, 32, 128)
+Loaded subject S7: (6580, 32, 128)
+Loaded subject S8: (6580, 32, 128)
+Loaded subject S9: (6580, 32, 128)
+Loaded subject S10: (6580, 32, 128)
+Loaded subject S11: (6580, 32, 128)
+Loaded subject S12: (6580, 32, 128)
+Loaded subject S13: (6580, 32, 128)
+Loaded subject S14: (6580, 32, 128)
+Loaded subject S15: (6580, 32, 128)
+Loaded subject S16: (6580, 32, 128)
+Loaded subject S17: (6580, 32, 128)
+Loaded subject S18: (6580, 32, 128)
+Loaded subject S19: (6580, 32, 128)
+Loaded subject S20: (6580, 32, 128)
+Loaded subject S21: (6580, 32, 128)
+Loaded subject S22: (6580, 32, 128)
+Loaded subject S23: (6580, 32, 128)
+Loaded subject S24: (6580, 32, 128)
+Loaded subject S25: (6580, 32, 128)
+Loaded subject S26: (6580, 32, 128)
+Loaded subject S27: (6580, 32, 128)
+Loaded subject S28: (6580, 32, 128)
+Loaded subject S29: (6580, 32, 128)
+Loaded subject S30: (6580, 32, 128)
+Total SSL data shape: (164500, 32, 128)
+🏗️  SSL Model Architecture:
+   - SSL Enabled: True
+   - SSL Approach: full_darnet
+   - Training Mode: ssl
+   - Decoder Type: EEGFullDARNetDecoder
+   - Encoder parameters: 36,888
+   - Decoder parameters: 275,232
+   - Total parameters: 312,138
+   - Decoder/Total ratio: 88.2%
+==================================================
+Starting SSL Pre-training
+==================================================
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+DARNet                                   --
+├─TokenEmbeddingOriginal: 1-1            --
+│    └─Sequential: 2-1                   --
+│    │    └─Conv2d: 3-1                  576
+│    │    └─BatchNorm2d: 3-2             128
+│    │    └─GELU: 3-3                    --
+│    └─Sequential: 2-2                   --
+│    │    └─Conv2d: 3-4                  32,784
+│    │    └─BatchNorm2d: 3-5             32
+│    │    └─GELU: 3-6                    --
+│    └─PositionalEmbedding: 2-3          --
+├─EEGFullDARNetDecoder: 1-2              --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-7                  576
+│    │    └─ReLU: 3-8                    --
+│    │    └─Dropout: 3-9                 --
+│    │    └─Linear: 3-10                 266,240
+│    └─Sequential: 2-5                   --
+│    │    └─Conv1d: 3-11                 6,208
+│    │    └─BatchNorm1d: 3-12            128
+│    │    └─ReLU: 3-13                   --
+│    │    └─Dropout: 3-14                --
+│    └─Conv1d: 2-6                       2,080
+├─Flatten: 1-3                           --
+├─Linear: 1-4                            18
+├─AttnRefine: 1-5                        --
+│    └─MyAttention: 2-7                  --
+│    │    └─Attention: 3-15              800
+│    └─Refine: 2-8                       --
+│    │    └─Conv1d: 3-16                 784
+│    │    └─BatchNorm1d: 3-17            32
+│    │    └─ELU: 3-18                    --
+│    │    └─MaxPool1d: 3-19              --
+│    └─AdaptiveAvgPool1d: 2-9            --
+│    └─Linear: 2-10                      68
+│    └─Flatten: 2-11                     --
+├─AttnRefine: 1-6                        --
+│    └─MyAttention: 2-12                 --
+│    │    └─Attention: 3-20              800
+│    └─Refine: 2-13                      --
+│    │    └─Conv1d: 3-21                 784
+│    │    └─BatchNorm1d: 3-22            32
+│    │    └─ELU: 3-23                    --
+│    │    └─MaxPool1d: 3-24              --
+│    └─AdaptiveAvgPool1d: 2-14           --
+│    └─Linear: 2-15                      68
+│    └─Flatten: 2-16                     --
+=================================================================
+Total params: 312,138
+Trainable params: 312,138
+Non-trainable params: 0
+=================================================================
+SSL Epoch  1 | SSL Loss: 0.397891
+SSL model saved at epoch 1 with loss 0.397891 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.397891
+SSL Epoch  2 | SSL Loss: 0.303055
+SSL model saved at epoch 2 with loss 0.303055 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.303055
+SSL Epoch  3 | SSL Loss: 0.278189
+SSL model saved at epoch 3 with loss 0.278189 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.278189
+SSL Epoch  4 | SSL Loss: 0.262771
+SSL model saved at epoch 4 with loss 0.262771 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.262771
+SSL Epoch  5 | SSL Loss: 0.253471
+SSL model saved at epoch 5 with loss 0.253471 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.253471
+SSL Epoch  6 | SSL Loss: 0.247765
+SSL model saved at epoch 6 with loss 0.247765 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.247765
+SSL Epoch  7 | SSL Loss: 0.243776
+SSL model saved at epoch 7 with loss 0.243776 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.243776
+SSL Epoch  8 | SSL Loss: 0.240805
+SSL model saved at epoch 8 with loss 0.240805 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.240805
+SSL Epoch  9 | SSL Loss: 0.238725
+SSL model saved at epoch 9 with loss 0.238725 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.238725
+SSL Epoch 10 | SSL Loss: 0.237022
+SSL model saved at epoch 10 with loss 0.237022 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.237022
+SSL Epoch 11 | SSL Loss: 0.235503
+SSL model saved at epoch 11 with loss 0.235503 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.235503
+SSL Epoch 12 | SSL Loss: 0.234160
+SSL model saved at epoch 12 with loss 0.234160 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.234160
+SSL Epoch 13 | SSL Loss: 0.233447
+SSL model saved at epoch 13 with loss 0.233447 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.233447
+SSL Epoch 14 | SSL Loss: 0.232301
+SSL model saved at epoch 14 with loss 0.232301 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.232301
+SSL Epoch 15 | SSL Loss: 0.231799
+SSL model saved at epoch 15 with loss 0.231799 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.231799
+SSL Epoch 16 | SSL Loss: 0.230694
+SSL model saved at epoch 16 with loss 0.230694 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.230694
+SSL Epoch 17 | SSL Loss: 0.230330
+SSL model saved at epoch 17 with loss 0.230330 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.230330
+SSL Epoch 18 | SSL Loss: 0.230108
+SSL model saved at epoch 18 with loss 0.230108 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.230108
+SSL Epoch 19 | SSL Loss: 0.229445
+SSL model saved at epoch 19 with loss 0.229445 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.229445
+SSL Epoch 20 | SSL Loss: 0.228765
+SSL model saved at epoch 20 with loss 0.228765 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.228765
+SSL Epoch 21 | SSL Loss: 0.228124
+SSL model saved at epoch 21 with loss 0.228124 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.228124
+SSL Epoch 22 | SSL Loss: 0.227770
+SSL model saved at epoch 22 with loss 0.227770 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.227770
+SSL Epoch 23 | SSL Loss: 0.227489
+SSL model saved at epoch 23 with loss 0.227489 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.227489
+SSL Epoch 24 | SSL Loss: 0.227375
+SSL model saved at epoch 24 with loss 0.227375 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.227375
+SSL Epoch 25 | SSL Loss: 0.226711
+SSL model saved at epoch 25 with loss 0.226711 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.226711
+SSL Epoch 26 | SSL Loss: 0.226407
+SSL model saved at epoch 26 with loss 0.226407 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.226407
+SSL Epoch 27 | SSL Loss: 0.226162
+SSL model saved at epoch 27 with loss 0.226162 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.226162
+SSL Epoch 28 | SSL Loss: 0.225848
+SSL model saved at epoch 28 with loss 0.225848 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.225848
+SSL Epoch 29 | SSL Loss: 0.225787
+SSL model saved at epoch 29 with loss 0.225787 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.225787
+SSL Epoch 30 | SSL Loss: 0.225248
+SSL model saved at epoch 30 with loss 0.225248 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.225248
+==================================================
+SSL Pre-training completed. Best loss: 0.225248
+==================================================
+train_data_shape(164500, 32, 128),val_data_shape(32900, 32, 128)
+🔄 Loading SSL pre-trained weights from: ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+📋 Available keys in SSL checkpoint: 58 total
+  - token_embedding.embed_layer.0.weight: torch.Size([64, 1, 1, 8])
+  - token_embedding.embed_layer.0.bias: torch.Size([64])
+  - token_embedding.embed_layer.1.weight: torch.Size([64])
+  - token_embedding.embed_layer.1.bias: torch.Size([64])
+  - token_embedding.embed_layer.1.running_mean: torch.Size([64])
+  - token_embedding.embed_layer.1.running_var: torch.Size([64])
+  - token_embedding.embed_layer.1.num_batches_tracked: torch.Size([])
+  - token_embedding.embed_layer2.0.weight: torch.Size([16, 64, 32, 1])
+  - token_embedding.embed_layer2.0.bias: torch.Size([16])
+  - token_embedding.embed_layer2.1.weight: torch.Size([16])
+  - token_embedding.embed_layer2.1.bias: torch.Size([16])
+  - token_embedding.embed_layer2.1.running_mean: torch.Size([16])
+  - token_embedding.embed_layer2.1.running_var: torch.Size([16])
+  - token_embedding.embed_layer2.1.num_batches_tracked: torch.Size([])
+  - token_embedding.position_embedding.pe: torch.Size([1, 5000, 16])
+  - ssl_decoder.feature_expand.0.weight: torch.Size([64, 8])
+  - ssl_decoder.feature_expand.0.bias: torch.Size([64])
+  - ssl_decoder.feature_expand.3.weight: torch.Size([4096, 64])
+  - ssl_decoder.feature_expand.3.bias: torch.Size([4096])
+  - ssl_decoder.temporal_conv.0.weight: torch.Size([64, 32, 3])
+  - ssl_decoder.temporal_conv.0.bias: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.weight: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.bias: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.running_mean: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.running_var: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.num_batches_tracked: torch.Size([])
+  - ssl_decoder.final_conv.weight: torch.Size([32, 64, 1])
+  - ssl_decoder.final_conv.bias: torch.Size([32])
+  - out.weight: torch.Size([2, 8])
+  - out.bias: torch.Size([2])
+  - stack1.attention.attention_layer.key.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.value.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.query.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.to_out.weight: torch.Size([16])
+  - stack1.attention.attention_layer.to_out.bias: torch.Size([16])
+  - stack1.conv_layer.downConv.weight: torch.Size([16, 16, 3])
+  - stack1.conv_layer.downConv.bias: torch.Size([16])
+  - stack1.conv_layer.norm.weight: torch.Size([16])
+  - stack1.conv_layer.norm.bias: torch.Size([16])
+  - stack1.conv_layer.norm.running_mean: torch.Size([16])
+  - stack1.conv_layer.norm.running_var: torch.Size([16])
+  - stack1.conv_layer.norm.num_batches_tracked: torch.Size([])
+  - stack1.out.weight: torch.Size([4, 16])
+  - stack1.out.bias: torch.Size([4])
+  - stack2.attention.attention_layer.key.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.value.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.query.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.to_out.weight: torch.Size([16])
+  - stack2.attention.attention_layer.to_out.bias: torch.Size([16])
+  - stack2.conv_layer.downConv.weight: torch.Size([16, 16, 3])
+  - stack2.conv_layer.downConv.bias: torch.Size([16])
+  - stack2.conv_layer.norm.weight: torch.Size([16])
+  - stack2.conv_layer.norm.bias: torch.Size([16])
+  - stack2.conv_layer.norm.running_mean: torch.Size([16])
+  - stack2.conv_layer.norm.running_var: torch.Size([16])
+  - stack2.conv_layer.norm.num_batches_tracked: torch.Size([])
+  - stack2.out.weight: torch.Size([4, 16])
+  - stack2.out.bias: torch.Size([4])
+🎯 SSL approach detected: full_darnet
+  ✅ Loading: token_embedding.embed_layer.0.weight -> torch.Size([64, 1, 1, 8])
+  ✅ Loading: token_embedding.embed_layer.0.bias -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.weight -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.bias -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.running_mean -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.running_var -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.num_batches_tracked -> torch.Size([])
+  ✅ Loading: token_embedding.embed_layer2.0.weight -> torch.Size([16, 64, 32, 1])
+  ✅ Loading: token_embedding.embed_layer2.0.bias -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.weight -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.bias -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.running_mean -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.running_var -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.num_batches_tracked -> torch.Size([])
+  ✅ Loading: token_embedding.position_embedding.pe -> torch.Size([1, 5000, 16])
+  ❌ Skipping: ssl_decoder.feature_expand.0.weight (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.0.bias (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.3.weight (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.3.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.0.weight (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.0.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.weight (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.running_mean (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.running_var (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.num_batches_tracked (decoder component)
+  ❌ Skipping: ssl_decoder.final_conv.weight (decoder component)
+  ❌ Skipping: ssl_decoder.final_conv.bias (decoder component)
+  ❌ Skipping: out.weight (decoder component)
+  ❌ Skipping: out.bias (decoder component)
+  ✅ Loading: stack1.attention.attention_layer.key.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.value.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.query.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.to_out.weight -> torch.Size([16])
+  ✅ Loading: stack1.attention.attention_layer.to_out.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.downConv.weight -> torch.Size([16, 16, 3])
+  ✅ Loading: stack1.conv_layer.downConv.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.weight -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.running_mean -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.running_var -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.num_batches_tracked -> torch.Size([])
+  ✅ Loading: stack1.out.weight -> torch.Size([4, 16])
+  ✅ Loading: stack1.out.bias -> torch.Size([4])
+  ✅ Loading: stack2.attention.attention_layer.key.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.value.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.query.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.to_out.weight -> torch.Size([16])
+  ✅ Loading: stack2.attention.attention_layer.to_out.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.downConv.weight -> torch.Size([16, 16, 3])
+  ✅ Loading: stack2.conv_layer.downConv.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.weight -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.running_mean -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.running_var -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.num_batches_tracked -> torch.Size([])
+  ✅ Loading: stack2.out.weight -> torch.Size([4, 16])
+  ✅ Loading: stack2.out.bias -> torch.Size([4])
+🔧 Loading 43 encoder components into fine-tuning model...
+⚠️  Missing keys (newly initialized): ['ssl_decoder.feature_expand.0.weight', 'ssl_decoder.feature_expand.0.bias', 'ssl_decoder.feature_expand.3.weight', 'ssl_decoder.feature_expand.3.bias', 'ssl_decoder.temporal_conv.0.weight', 'ssl_decoder.temporal_conv.0.bias', 'ssl_decoder.temporal_conv.1.weight', 'ssl_decoder.temporal_conv.1.bias', 'ssl_decoder.temporal_conv.1.running_mean', 'ssl_decoder.temporal_conv.1.running_var', 'ssl_decoder.final_conv.weight', 'ssl_decoder.final_conv.bias', 'out.weight', 'out.bias']
+✅ Successfully loaded SSL pre-trained weights!
+🎯 SSL decoder removed, feature classifier ready for fine-tuning
+==================================================
+Starting Fine-tuning
+==================================================
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+DARNet                                   --
+├─TokenEmbeddingOriginal: 1-1            --
+│    └─Sequential: 2-1                   --
+│    │    └─Conv2d: 3-1                  576
+│    │    └─BatchNorm2d: 3-2             128
+│    │    └─GELU: 3-3                    --
+│    └─Sequential: 2-2                   --
+│    │    └─Conv2d: 3-4                  32,784
+│    │    └─BatchNorm2d: 3-5             32
+│    │    └─GELU: 3-6                    --
+│    └─PositionalEmbedding: 2-3          --
+├─EEGFullDARNetDecoder: 1-2              --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-7                  576
+│    │    └─ReLU: 3-8                    --
+│    │    └─Dropout: 3-9                 --
+│    │    └─Linear: 3-10                 266,240
+│    └─Sequential: 2-5                   --
+│    │    └─Conv1d: 3-11                 6,208
+│    │    └─BatchNorm1d: 3-12            128
+│    │    └─ReLU: 3-13                   --
+│    │    └─Dropout: 3-14                --
+│    └─Conv1d: 2-6                       2,080
+├─Flatten: 1-3                           --
+├─Linear: 1-4                            18
+├─AttnRefine: 1-5                        --
+│    └─MyAttention: 2-7                  --
+│    │    └─Attention: 3-15              800
+│    └─Refine: 2-8                       --
+│    │    └─Conv1d: 3-16                 784
+│    │    └─BatchNorm1d: 3-17            32
+│    │    └─ELU: 3-18                    --
+│    │    └─MaxPool1d: 3-19              --
+│    └─AdaptiveAvgPool1d: 2-9            --
+│    └─Linear: 2-10                      68
+│    └─Flatten: 2-11                     --
+├─AttnRefine: 1-6                        --
+│    └─MyAttention: 2-12                 --
+│    │    └─Attention: 3-20              800
+│    └─Refine: 2-13                      --
+│    │    └─Conv1d: 3-21                 784
+│    │    └─BatchNorm1d: 3-22            32
+│    │    └─ELU: 3-23                    --
+│    │    └─MaxPool1d: 3-24              --
+│    └─AdaptiveAvgPool1d: 2-14           --
+│    └─Linear: 2-15                      68
+│    └─Flatten: 2-16                     --
+=================================================================
+Total params: 312,138
+Trainable params: 312,138
+Non-trainable params: 0
+=================================================================
+TestSub: S[1, 2, 3, 4, 5] Epoch  1 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.4773 | Valid Loss 1.5926 | Train Acc 73.9166| Valid Acc 51.3102
+Validation acc increase (0.000000 --> 51.310190) in epoch (1).  Saving model ...
+TestSub: S[1, 2, 3, 4, 5] Epoch  2 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.2336 | Valid Loss 2.0983 | Train Acc 90.1933| Valid Acc 50.2979
+TestSub: S[1, 2, 3, 4, 5] Epoch  3 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1619 | Valid Loss 2.4803 | Train Acc 93.5865| Valid Acc 49.7781
+TestSub: S[1, 2, 3, 4, 5] Epoch  4 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1240 | Valid Loss 2.4783 | Train Acc 95.2341| Valid Acc 48.7476
+TestSub: S[1, 2, 3, 4, 5] Epoch  5 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1014 | Valid Loss 3.0364 | Train Acc 96.1971| Valid Acc 46.9024
+TestSub: S[1, 2, 3, 4, 5] Epoch  6 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0868 | Valid Loss 2.7694 | Train Acc 96.8045| Valid Acc 50.0122
+TestSub: S[1, 2, 3, 4, 5] Epoch  7 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0763 | Valid Loss 3.0372 | Train Acc 97.2076| Valid Acc 50.0061
+TestSub: S[1, 2, 3, 4, 5] Epoch  8 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0675 | Valid Loss 3.0236 | Train Acc 97.5371| Valid Acc 49.1732
+TestSub: S[1, 2, 3, 4, 5] Epoch  9 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0616 | Valid Loss 3.1289 | Train Acc 97.7961| Valid Acc 50.6749
+TestSub: S[1, 2, 3, 4, 5] Epoch 10 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0568 | Valid Loss 3.1504 | Train Acc 97.9335| Valid Acc 50.6293
+TestSub: S[1, 2, 3, 4, 5] Epoch 11 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0529 | Valid Loss 3.1955 | Train Acc 98.1153| Valid Acc 50.1094
+TestSub: S[1, 2, 3, 4, 5] Epoch 12 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0486 | Valid Loss 3.3603 | Train Acc 98.2600| Valid Acc 51.7601
+Validation acc increase (51.310190 --> 51.760092) in epoch (12).  Saving model ...
+TestSub: S[1, 2, 3, 4, 5] Epoch 13 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0457 | Valid Loss 3.2175 | Train Acc 98.3718| Valid Acc 50.8025
+TestSub: S[1, 2, 3, 4, 5] Epoch 14 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0440 | Valid Loss 3.4900 | Train Acc 98.4612| Valid Acc 49.3799
+TestSub: S[1, 2, 3, 4, 5] Epoch 15 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0385 | Valid Loss 3.4650 | Train Acc 98.6679| Valid Acc 50.0699
+TestSub: S[1, 2, 3, 4, 5] Epoch 16 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0381 | Valid Loss 3.7597 | Train Acc 98.6606| Valid Acc 47.9694
+TestSub: S[1, 2, 3, 4, 5] Epoch 17 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0352 | Valid Loss 3.6099 | Train Acc 98.7518| Valid Acc 50.6840
+TestSub: S[1, 2, 3, 4, 5] Epoch 18 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0352 | Valid Loss 3.5680 | Train Acc 98.7749| Valid Acc 49.7750
+TestSub: S[1, 2, 3, 4, 5] Epoch 19 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0330 | Valid Loss 3.6247 | Train Acc 98.8619| Valid Acc 49.6535
+TestSub: S[1, 2, 3, 4, 5] Epoch 20 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0321 | Valid Loss 3.7067 | Train Acc 98.8886| Valid Acc 50.6475
+TestSub: S[1, 2, 3, 4, 5] Epoch 21 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0302 | Valid Loss 3.8242 | Train Acc 98.9312| Valid Acc 49.2188
+TestSub: S[1, 2, 3, 4, 5] Epoch 22 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0284 | Valid Loss 3.9250 | Train Acc 99.0376| Valid Acc 48.6807
+TestSub: S[1, 2, 3, 4, 5] Epoch 23 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0275 | Valid Loss 4.0248 | Train Acc 99.0443| Valid Acc 48.1426
+TestSub: S[1, 2, 3, 4, 5] Epoch 24 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0275 | Valid Loss 4.0724 | Train Acc 99.0649| Valid Acc 48.1761
+TestSub: S[1, 2, 3, 4, 5] Epoch 25 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0248 | Valid Loss 4.0856 | Train Acc 99.1458| Valid Acc 49.4984
+TestSub: S[1, 2, 3, 4, 5] Epoch 26 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0248 | Valid Loss 4.0582 | Train Acc 99.1598| Valid Acc 48.7172
+TestSub: S[1, 2, 3, 4, 5] Epoch 27 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0242 | Valid Loss 4.0242 | Train Acc 99.1580| Valid Acc 48.8236
+TestSub: S[1, 2, 3, 4, 5] Epoch 28 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0226 | Valid Loss 4.1392 | Train Acc 99.2139| Valid Acc 49.0212
+TestSub: S[1, 2, 3, 4, 5] Epoch 29 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0232 | Valid Loss 4.0662 | Train Acc 99.2218| Valid Acc 47.2702
+TestSub: S[1, 2, 3, 4, 5] Epoch 30 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0211 | Valid Loss 3.9710 | Train Acc 99.2868| Valid Acc 50.2827
+TestSub: S[1, 2, 3, 4, 5] Epoch 31 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0213 | Valid Loss 4.1914 | Train Acc 99.2765| Valid Acc 48.1426
+TestSub: S[1, 2, 3, 4, 5] Epoch 32 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0205 | Valid Loss 4.1683 | Train Acc 99.2972| Valid Acc 48.7476
+TestSub: S[1, 2, 3, 4, 5] Epoch 33 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0196 | Valid Loss 4.2155 | Train Acc 99.3446| Valid Acc 49.2309
+TestSub: S[1, 2, 3, 4, 5] Epoch 34 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0191 | Valid Loss 4.1336 | Train Acc 99.3574| Valid Acc 50.2128
+TestSub: S[1, 2, 3, 4, 5] Epoch 35 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0189 | Valid Loss 4.0983 | Train Acc 99.3562| Valid Acc 48.5591
+TestSub: S[1, 2, 3, 4, 5] Epoch 36 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0186 | Valid Loss 4.0135 | Train Acc 99.3628| Valid Acc 49.6747
+TestSub: S[1, 2, 3, 4, 5] Epoch 37 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0185 | Valid Loss 4.1487 | Train Acc 99.3975| Valid Acc 48.3980
+TestSub: S[1, 2, 3, 4, 5] Epoch 38 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0172 | Valid Loss 4.3021 | Train Acc 99.3993| Valid Acc 47.6927
+TestSub: S[1, 2, 3, 4, 5] Epoch 39 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0176 | Valid Loss 4.1430 | Train Acc 99.4249| Valid Acc 49.9909
+TestSub: S[1, 2, 3, 4, 5] Epoch 40 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0166 | Valid Loss 4.2281 | Train Acc 99.4328| Valid Acc 47.4921
+TestSub: S[1, 2, 3, 4, 5] Epoch 41 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0155 | Valid Loss 4.1672 | Train Acc 99.4826| Valid Acc 47.7778
+TestSub: S[1, 2, 3, 4, 5] Epoch 42 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0160 | Valid Loss 4.2814 | Train Acc 99.4723| Valid Acc 48.6077
+Early stopping triggered after 42 epochs (30 epochs without improvement)
+--------------------------------------------------
+Test_Subject :S[1, 2, 3, 4, 5] |Best epoch:12 | Test Loss:3.3603 | Best Acc 51.7601 | Savemodel Acc 51.7601
+--------------------------------------------------
+
+========== Fold 2 ==========
+Train IDs: [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+Val IDs:   [6, 7, 8, 9, 10]
+================================================================================
+SSL PRE-TRAINING PHASE
+================================================================================
+Loading SSL data for subjects: [1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+Loaded subject S1: (6580, 32, 128)
+Loaded subject S2: (6580, 32, 128)
+Loaded subject S3: (6580, 32, 128)
+Loaded subject S4: (6580, 32, 128)
+Loaded subject S5: (6580, 32, 128)
+Loaded subject S11: (6580, 32, 128)
+Loaded subject S12: (6580, 32, 128)
+Loaded subject S13: (6580, 32, 128)
+Loaded subject S14: (6580, 32, 128)
+Loaded subject S15: (6580, 32, 128)
+Loaded subject S16: (6580, 32, 128)
+Loaded subject S17: (6580, 32, 128)
+Loaded subject S18: (6580, 32, 128)
+Loaded subject S19: (6580, 32, 128)
+Loaded subject S20: (6580, 32, 128)
+Loaded subject S21: (6580, 32, 128)
+Loaded subject S22: (6580, 32, 128)
+Loaded subject S23: (6580, 32, 128)
+Loaded subject S24: (6580, 32, 128)
+Loaded subject S25: (6580, 32, 128)
+Loaded subject S26: (6580, 32, 128)
+Loaded subject S27: (6580, 32, 128)
+Loaded subject S28: (6580, 32, 128)
+Loaded subject S29: (6580, 32, 128)
+Loaded subject S30: (6580, 32, 128)
+Total SSL data shape: (164500, 32, 128)
+🏗️  SSL Model Architecture:
+   - SSL Enabled: True
+   - SSL Approach: full_darnet
+   - Training Mode: ssl
+   - Decoder Type: EEGFullDARNetDecoder
+   - Encoder parameters: 36,888
+   - Decoder parameters: 275,232
+   - Total parameters: 312,138
+   - Decoder/Total ratio: 88.2%
+==================================================
+Starting SSL Pre-training
+==================================================
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+DARNet                                   --
+├─TokenEmbeddingOriginal: 1-1            --
+│    └─Sequential: 2-1                   --
+│    │    └─Conv2d: 3-1                  576
+│    │    └─BatchNorm2d: 3-2             128
+│    │    └─GELU: 3-3                    --
+│    └─Sequential: 2-2                   --
+│    │    └─Conv2d: 3-4                  32,784
+│    │    └─BatchNorm2d: 3-5             32
+│    │    └─GELU: 3-6                    --
+│    └─PositionalEmbedding: 2-3          --
+├─EEGFullDARNetDecoder: 1-2              --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-7                  576
+│    │    └─ReLU: 3-8                    --
+│    │    └─Dropout: 3-9                 --
+│    │    └─Linear: 3-10                 266,240
+│    └─Sequential: 2-5                   --
+│    │    └─Conv1d: 3-11                 6,208
+│    │    └─BatchNorm1d: 3-12            128
+│    │    └─ReLU: 3-13                   --
+│    │    └─Dropout: 3-14                --
+│    └─Conv1d: 2-6                       2,080
+├─Flatten: 1-3                           --
+├─Linear: 1-4                            18
+├─AttnRefine: 1-5                        --
+│    └─MyAttention: 2-7                  --
+│    │    └─Attention: 3-15              800
+│    └─Refine: 2-8                       --
+│    │    └─Conv1d: 3-16                 784
+│    │    └─BatchNorm1d: 3-17            32
+│    │    └─ELU: 3-18                    --
+│    │    └─MaxPool1d: 3-19              --
+│    └─AdaptiveAvgPool1d: 2-9            --
+│    └─Linear: 2-10                      68
+│    └─Flatten: 2-11                     --
+├─AttnRefine: 1-6                        --
+│    └─MyAttention: 2-12                 --
+│    │    └─Attention: 3-20              800
+│    └─Refine: 2-13                      --
+│    │    └─Conv1d: 3-21                 784
+│    │    └─BatchNorm1d: 3-22            32
+│    │    └─ELU: 3-23                    --
+│    │    └─MaxPool1d: 3-24              --
+│    └─AdaptiveAvgPool1d: 2-14           --
+│    └─Linear: 2-15                      68
+│    └─Flatten: 2-16                     --
+=================================================================
+Total params: 312,138
+Trainable params: 312,138
+Non-trainable params: 0
+=================================================================
+SSL Epoch  1 | SSL Loss: 0.404625
+SSL model saved at epoch 1 with loss 0.404625 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.404625
+SSL Epoch  2 | SSL Loss: 0.305640
+SSL model saved at epoch 2 with loss 0.305640 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.305640
+SSL Epoch  3 | SSL Loss: 0.273553
+SSL model saved at epoch 3 with loss 0.273553 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.273553
+SSL Epoch  4 | SSL Loss: 0.256939
+SSL model saved at epoch 4 with loss 0.256939 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.256939
+SSL Epoch  5 | SSL Loss: 0.247108
+SSL model saved at epoch 5 with loss 0.247108 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.247108
+SSL Epoch  6 | SSL Loss: 0.241894
+SSL model saved at epoch 6 with loss 0.241894 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.241894
+SSL Epoch  7 | SSL Loss: 0.238347
+SSL model saved at epoch 7 with loss 0.238347 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.238347
+SSL Epoch  8 | SSL Loss: 0.235830
+SSL model saved at epoch 8 with loss 0.235830 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.235830
+SSL Epoch  9 | SSL Loss: 0.233737
+SSL model saved at epoch 9 with loss 0.233737 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.233737
+SSL Epoch 10 | SSL Loss: 0.232425
+SSL model saved at epoch 10 with loss 0.232425 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.232425
+SSL Epoch 11 | SSL Loss: 0.230944
+SSL model saved at epoch 11 with loss 0.230944 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.230944
+SSL Epoch 12 | SSL Loss: 0.229810
+SSL model saved at epoch 12 with loss 0.229810 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.229810
+SSL Epoch 13 | SSL Loss: 0.228809
+SSL model saved at epoch 13 with loss 0.228809 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.228809
+SSL Epoch 14 | SSL Loss: 0.227427
+SSL model saved at epoch 14 with loss 0.227427 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.227427
+SSL Epoch 15 | SSL Loss: 0.226853
+SSL model saved at epoch 15 with loss 0.226853 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.226853
+SSL Epoch 16 | SSL Loss: 0.225871
+SSL model saved at epoch 16 with loss 0.225871 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.225871
+SSL Epoch 17 | SSL Loss: 0.225638
+SSL model saved at epoch 17 with loss 0.225638 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.225638
+SSL Epoch 18 | SSL Loss: 0.224615
+SSL model saved at epoch 18 with loss 0.224615 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.224615
+SSL Epoch 19 | SSL Loss: 0.224357
+SSL model saved at epoch 19 with loss 0.224357 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.224357
+SSL Epoch 20 | SSL Loss: 0.223521
+SSL model saved at epoch 20 with loss 0.223521 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.223521
+SSL Epoch 21 | SSL Loss: 0.223575
+SSL Epoch 22 | SSL Loss: 0.223185
+SSL model saved at epoch 22 with loss 0.223185 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.223185
+SSL Epoch 23 | SSL Loss: 0.222598
+SSL model saved at epoch 23 with loss 0.222598 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.222598
+SSL Epoch 24 | SSL Loss: 0.222341
+SSL model saved at epoch 24 with loss 0.222341 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.222341
+SSL Epoch 25 | SSL Loss: 0.221720
+SSL model saved at epoch 25 with loss 0.221720 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.221720
+SSL Epoch 26 | SSL Loss: 0.221531
+SSL model saved at epoch 26 with loss 0.221531 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.221531
+SSL Epoch 27 | SSL Loss: 0.220932
+SSL model saved at epoch 27 with loss 0.220932 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.220932
+SSL Epoch 28 | SSL Loss: 0.220896
+SSL model saved at epoch 28 with loss 0.220896 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.220896
+SSL Epoch 29 | SSL Loss: 0.220738
+SSL model saved at epoch 29 with loss 0.220738 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.220738
+SSL Epoch 30 | SSL Loss: 0.220280
+SSL model saved at epoch 30 with loss 0.220280 to ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+SSL model saved with loss 0.220280
+==================================================
+SSL Pre-training completed. Best loss: 0.220280
+==================================================
+train_data_shape(164500, 32, 128),val_data_shape(32900, 32, 128)
+🔄 Loading SSL pre-trained weights from: ./exps/cross-subject/DARNet_SSL_FullDARNet/ssl_models_task1_AAD_MM-AAD_original_ssl_2025-10-12-20-00-39/ssl_best_model.pt
+📋 Available keys in SSL checkpoint: 58 total
+  - token_embedding.embed_layer.0.weight: torch.Size([64, 1, 1, 8])
+  - token_embedding.embed_layer.0.bias: torch.Size([64])
+  - token_embedding.embed_layer.1.weight: torch.Size([64])
+  - token_embedding.embed_layer.1.bias: torch.Size([64])
+  - token_embedding.embed_layer.1.running_mean: torch.Size([64])
+  - token_embedding.embed_layer.1.running_var: torch.Size([64])
+  - token_embedding.embed_layer.1.num_batches_tracked: torch.Size([])
+  - token_embedding.embed_layer2.0.weight: torch.Size([16, 64, 32, 1])
+  - token_embedding.embed_layer2.0.bias: torch.Size([16])
+  - token_embedding.embed_layer2.1.weight: torch.Size([16])
+  - token_embedding.embed_layer2.1.bias: torch.Size([16])
+  - token_embedding.embed_layer2.1.running_mean: torch.Size([16])
+  - token_embedding.embed_layer2.1.running_var: torch.Size([16])
+  - token_embedding.embed_layer2.1.num_batches_tracked: torch.Size([])
+  - token_embedding.position_embedding.pe: torch.Size([1, 5000, 16])
+  - ssl_decoder.feature_expand.0.weight: torch.Size([64, 8])
+  - ssl_decoder.feature_expand.0.bias: torch.Size([64])
+  - ssl_decoder.feature_expand.3.weight: torch.Size([4096, 64])
+  - ssl_decoder.feature_expand.3.bias: torch.Size([4096])
+  - ssl_decoder.temporal_conv.0.weight: torch.Size([64, 32, 3])
+  - ssl_decoder.temporal_conv.0.bias: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.weight: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.bias: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.running_mean: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.running_var: torch.Size([64])
+  - ssl_decoder.temporal_conv.1.num_batches_tracked: torch.Size([])
+  - ssl_decoder.final_conv.weight: torch.Size([32, 64, 1])
+  - ssl_decoder.final_conv.bias: torch.Size([32])
+  - out.weight: torch.Size([2, 8])
+  - out.bias: torch.Size([2])
+  - stack1.attention.attention_layer.key.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.value.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.query.weight: torch.Size([16, 16])
+  - stack1.attention.attention_layer.to_out.weight: torch.Size([16])
+  - stack1.attention.attention_layer.to_out.bias: torch.Size([16])
+  - stack1.conv_layer.downConv.weight: torch.Size([16, 16, 3])
+  - stack1.conv_layer.downConv.bias: torch.Size([16])
+  - stack1.conv_layer.norm.weight: torch.Size([16])
+  - stack1.conv_layer.norm.bias: torch.Size([16])
+  - stack1.conv_layer.norm.running_mean: torch.Size([16])
+  - stack1.conv_layer.norm.running_var: torch.Size([16])
+  - stack1.conv_layer.norm.num_batches_tracked: torch.Size([])
+  - stack1.out.weight: torch.Size([4, 16])
+  - stack1.out.bias: torch.Size([4])
+  - stack2.attention.attention_layer.key.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.value.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.query.weight: torch.Size([16, 16])
+  - stack2.attention.attention_layer.to_out.weight: torch.Size([16])
+  - stack2.attention.attention_layer.to_out.bias: torch.Size([16])
+  - stack2.conv_layer.downConv.weight: torch.Size([16, 16, 3])
+  - stack2.conv_layer.downConv.bias: torch.Size([16])
+  - stack2.conv_layer.norm.weight: torch.Size([16])
+  - stack2.conv_layer.norm.bias: torch.Size([16])
+  - stack2.conv_layer.norm.running_mean: torch.Size([16])
+  - stack2.conv_layer.norm.running_var: torch.Size([16])
+  - stack2.conv_layer.norm.num_batches_tracked: torch.Size([])
+  - stack2.out.weight: torch.Size([4, 16])
+  - stack2.out.bias: torch.Size([4])
+🎯 SSL approach detected: full_darnet
+  ✅ Loading: token_embedding.embed_layer.0.weight -> torch.Size([64, 1, 1, 8])
+  ✅ Loading: token_embedding.embed_layer.0.bias -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.weight -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.bias -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.running_mean -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.running_var -> torch.Size([64])
+  ✅ Loading: token_embedding.embed_layer.1.num_batches_tracked -> torch.Size([])
+  ✅ Loading: token_embedding.embed_layer2.0.weight -> torch.Size([16, 64, 32, 1])
+  ✅ Loading: token_embedding.embed_layer2.0.bias -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.weight -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.bias -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.running_mean -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.running_var -> torch.Size([16])
+  ✅ Loading: token_embedding.embed_layer2.1.num_batches_tracked -> torch.Size([])
+  ✅ Loading: token_embedding.position_embedding.pe -> torch.Size([1, 5000, 16])
+  ❌ Skipping: ssl_decoder.feature_expand.0.weight (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.0.bias (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.3.weight (decoder component)
+  ❌ Skipping: ssl_decoder.feature_expand.3.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.0.weight (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.0.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.weight (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.bias (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.running_mean (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.running_var (decoder component)
+  ❌ Skipping: ssl_decoder.temporal_conv.1.num_batches_tracked (decoder component)
+  ❌ Skipping: ssl_decoder.final_conv.weight (decoder component)
+  ❌ Skipping: ssl_decoder.final_conv.bias (decoder component)
+  ❌ Skipping: out.weight (decoder component)
+  ❌ Skipping: out.bias (decoder component)
+  ✅ Loading: stack1.attention.attention_layer.key.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.value.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.query.weight -> torch.Size([16, 16])
+  ✅ Loading: stack1.attention.attention_layer.to_out.weight -> torch.Size([16])
+  ✅ Loading: stack1.attention.attention_layer.to_out.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.downConv.weight -> torch.Size([16, 16, 3])
+  ✅ Loading: stack1.conv_layer.downConv.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.weight -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.bias -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.running_mean -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.running_var -> torch.Size([16])
+  ✅ Loading: stack1.conv_layer.norm.num_batches_tracked -> torch.Size([])
+  ✅ Loading: stack1.out.weight -> torch.Size([4, 16])
+  ✅ Loading: stack1.out.bias -> torch.Size([4])
+  ✅ Loading: stack2.attention.attention_layer.key.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.value.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.query.weight -> torch.Size([16, 16])
+  ✅ Loading: stack2.attention.attention_layer.to_out.weight -> torch.Size([16])
+  ✅ Loading: stack2.attention.attention_layer.to_out.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.downConv.weight -> torch.Size([16, 16, 3])
+  ✅ Loading: stack2.conv_layer.downConv.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.weight -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.bias -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.running_mean -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.running_var -> torch.Size([16])
+  ✅ Loading: stack2.conv_layer.norm.num_batches_tracked -> torch.Size([])
+  ✅ Loading: stack2.out.weight -> torch.Size([4, 16])
+  ✅ Loading: stack2.out.bias -> torch.Size([4])
+🔧 Loading 43 encoder components into fine-tuning model...
+⚠️  Missing keys (newly initialized): ['ssl_decoder.feature_expand.0.weight', 'ssl_decoder.feature_expand.0.bias', 'ssl_decoder.feature_expand.3.weight', 'ssl_decoder.feature_expand.3.bias', 'ssl_decoder.temporal_conv.0.weight', 'ssl_decoder.temporal_conv.0.bias', 'ssl_decoder.temporal_conv.1.weight', 'ssl_decoder.temporal_conv.1.bias', 'ssl_decoder.temporal_conv.1.running_mean', 'ssl_decoder.temporal_conv.1.running_var', 'ssl_decoder.final_conv.weight', 'ssl_decoder.final_conv.bias', 'out.weight', 'out.bias']
+✅ Successfully loaded SSL pre-trained weights!
+🎯 SSL decoder removed, feature classifier ready for fine-tuning
+==================================================
+Starting Fine-tuning
+==================================================
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+DARNet                                   --
+├─TokenEmbeddingOriginal: 1-1            --
+│    └─Sequential: 2-1                   --
+│    │    └─Conv2d: 3-1                  576
+│    │    └─BatchNorm2d: 3-2             128
+│    │    └─GELU: 3-3                    --
+│    └─Sequential: 2-2                   --
+│    │    └─Conv2d: 3-4                  32,784
+│    │    └─BatchNorm2d: 3-5             32
+│    │    └─GELU: 3-6                    --
+│    └─PositionalEmbedding: 2-3          --
+├─EEGFullDARNetDecoder: 1-2              --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-7                  576
+│    │    └─ReLU: 3-8                    --
+│    │    └─Dropout: 3-9                 --
+│    │    └─Linear: 3-10                 266,240
+│    └─Sequential: 2-5                   --
+│    │    └─Conv1d: 3-11                 6,208
+│    │    └─BatchNorm1d: 3-12            128
+│    │    └─ReLU: 3-13                   --
+│    │    └─Dropout: 3-14                --
+│    └─Conv1d: 2-6                       2,080
+├─Flatten: 1-3                           --
+├─Linear: 1-4                            18
+├─AttnRefine: 1-5                        --
+│    └─MyAttention: 2-7                  --
+│    │    └─Attention: 3-15              800
+│    └─Refine: 2-8                       --
+│    │    └─Conv1d: 3-16                 784
+│    │    └─BatchNorm1d: 3-17            32
+│    │    └─ELU: 3-18                    --
+│    │    └─MaxPool1d: 3-19              --
+│    └─AdaptiveAvgPool1d: 2-9            --
+│    └─Linear: 2-10                      68
+│    └─Flatten: 2-11                     --
+├─AttnRefine: 1-6                        --
+│    └─MyAttention: 2-12                 --
+│    │    └─Attention: 3-20              800
+│    └─Refine: 2-13                      --
+│    │    └─Conv1d: 3-21                 784
+│    │    └─BatchNorm1d: 3-22            32
+│    │    └─ELU: 3-23                    --
+│    │    └─MaxPool1d: 3-24              --
+│    └─AdaptiveAvgPool1d: 2-14           --
+│    └─Linear: 2-15                      68
+│    └─Flatten: 2-16                     --
+=================================================================
+Total params: 312,138
+Trainable params: 312,138
+Non-trainable params: 0
+=================================================================
+TestSub: S[6, 7, 8, 9, 10] Epoch  1 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.4524 | Valid Loss 2.0296 | Train Acc 75.5010| Valid Acc 45.4523
+Validation acc increase (0.000000 --> 45.452335) in epoch (1).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch  2 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.2199 | Valid Loss 2.5797 | Train Acc 90.6414| Valid Acc 46.1941
+Validation acc increase (45.452335 --> 46.194066) in epoch (2).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch  3 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1569 | Valid Loss 2.8627 | Train Acc 93.6764| Valid Acc 43.7500
+TestSub: S[6, 7, 8, 9, 10] Epoch  4 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.1204 | Valid Loss 3.0746 | Train Acc 95.2955| Valid Acc 45.6894
+TestSub: S[6, 7, 8, 9, 10] Epoch  5 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0992 | Valid Loss 2.9916 | Train Acc 96.2670| Valid Acc 46.2245
+Validation acc increase (46.194066 --> 46.224465) in epoch (5).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch  6 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0849 | Valid Loss 3.3798 | Train Acc 96.8805| Valid Acc 45.3611
+TestSub: S[6, 7, 8, 9, 10] Epoch  7 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0734 | Valid Loss 3.5076 | Train Acc 97.3669| Valid Acc 46.7200
+Validation acc increase (46.224465 --> 46.719966) in epoch (7).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch  8 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0657 | Valid Loss 3.6266 | Train Acc 97.6289| Valid Acc 45.4827
+TestSub: S[6, 7, 8, 9, 10] Epoch  9 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0590 | Valid Loss 3.6843 | Train Acc 97.9195| Valid Acc 46.0512
+TestSub: S[6, 7, 8, 9, 10] Epoch 10 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0535 | Valid Loss 3.4991 | Train Acc 98.0745| Valid Acc 47.6623
+Validation acc increase (46.719966 --> 47.662330) in epoch (10).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch 11 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0474 | Valid Loss 3.8130 | Train Acc 98.3202| Valid Acc 46.2731
+TestSub: S[6, 7, 8, 9, 10] Epoch 12 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0436 | Valid Loss 3.7512 | Train Acc 98.4545| Valid Acc 47.3401
+TestSub: S[6, 7, 8, 9, 10] Epoch 13 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0406 | Valid Loss 3.8843 | Train Acc 98.6108| Valid Acc 47.3644
+TestSub: S[6, 7, 8, 9, 10] Epoch 14 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0389 | Valid Loss 3.9638 | Train Acc 98.6375| Valid Acc 48.5378
+Validation acc increase (47.662330 --> 48.537816) in epoch (14).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch 15 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0369 | Valid Loss 3.7782 | Train Acc 98.7378| Valid Acc 46.7686
+TestSub: S[6, 7, 8, 9, 10] Epoch 16 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0351 | Valid Loss 3.8560 | Train Acc 98.7956| Valid Acc 48.2825
+TestSub: S[6, 7, 8, 9, 10] Epoch 17 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0316 | Valid Loss 3.8489 | Train Acc 98.8965| Valid Acc 48.4071
+TestSub: S[6, 7, 8, 9, 10] Epoch 18 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0326 | Valid Loss 3.6927 | Train Acc 98.8521| Valid Acc 48.8144
+Validation acc increase (48.537816 --> 48.814446) in epoch (18).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch 19 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0293 | Valid Loss 4.0176 | Train Acc 98.9902| Valid Acc 48.5500
+TestSub: S[6, 7, 8, 9, 10] Epoch 20 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0283 | Valid Loss 4.1589 | Train Acc 99.0613| Valid Acc 48.2642
+TestSub: S[6, 7, 8, 9, 10] Epoch 21 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0273 | Valid Loss 3.8590 | Train Acc 99.0813| Valid Acc 48.5226
+TestSub: S[6, 7, 8, 9, 10] Epoch 22 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0251 | Valid Loss 3.9407 | Train Acc 99.1391| Valid Acc 47.5620
+TestSub: S[6, 7, 8, 9, 10] Epoch 23 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0245 | Valid Loss 4.2169 | Train Acc 99.1561| Valid Acc 47.9542
+TestSub: S[6, 7, 8, 9, 10] Epoch 24 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0236 | Valid Loss 4.1948 | Train Acc 99.2206| Valid Acc 46.8841
+TestSub: S[6, 7, 8, 9, 10] Epoch 25 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0229 | Valid Loss 3.9687 | Train Acc 99.2309| Valid Acc 46.6531
+TestSub: S[6, 7, 8, 9, 10] Epoch 26 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0224 | Valid Loss 4.3536 | Train Acc 99.2619| Valid Acc 46.6531
+TestSub: S[6, 7, 8, 9, 10] Epoch 27 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0225 | Valid Loss 3.8739 | Train Acc 99.2412| Valid Acc 47.1334
+TestSub: S[6, 7, 8, 9, 10] Epoch 28 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0209 | Valid Loss 3.9638 | Train Acc 99.3008| Valid Acc 47.8660
+TestSub: S[6, 7, 8, 9, 10] Epoch 29 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0202 | Valid Loss 3.8872 | Train Acc 99.3410| Valid Acc 47.3827
+TestSub: S[6, 7, 8, 9, 10] Epoch 30 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0196 | Valid Loss 3.9129 | Train Acc 99.3330| Valid Acc 46.7139
+TestSub: S[6, 7, 8, 9, 10] Epoch 31 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0193 | Valid Loss 4.1717 | Train Acc 99.3531| Valid Acc 48.2399
+TestSub: S[6, 7, 8, 9, 10] Epoch 32 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0190 | Valid Loss 4.1841 | Train Acc 99.3829| Valid Acc 48.6625
+TestSub: S[6, 7, 8, 9, 10] Epoch 33 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0178 | Valid Loss 4.1485 | Train Acc 99.4060| Valid Acc 47.4739
+TestSub: S[6, 7, 8, 9, 10] Epoch 34 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0187 | Valid Loss 4.0162 | Train Acc 99.3932| Valid Acc 46.3369
+TestSub: S[6, 7, 8, 9, 10] Epoch 35 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0156 | Valid Loss 4.3526 | Train Acc 99.4960| Valid Acc 48.4041
+TestSub: S[6, 7, 8, 9, 10] Epoch 36 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0180 | Valid Loss 4.1848 | Train Acc 99.4236| Valid Acc 46.3765
+TestSub: S[6, 7, 8, 9, 10] Epoch 37 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0159 | Valid Loss 4.1083 | Train Acc 99.4705| Valid Acc 46.7595
+TestSub: S[6, 7, 8, 9, 10] Epoch 38 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0153 | Valid Loss 4.3280 | Train Acc 99.4990| Valid Acc 47.2823
+TestSub: S[6, 7, 8, 9, 10] Epoch 39 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0164 | Valid Loss 4.2945 | Train Acc 99.4480| Valid Acc 49.1215
+Validation acc increase (48.814446 --> 49.121474) in epoch (39).  Saving model ...
+TestSub: S[6, 7, 8, 9, 10] Epoch 40 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0160 | Valid Loss 3.9428 | Train Acc 99.4887| Valid Acc 46.0421
+TestSub: S[6, 7, 8, 9, 10] Epoch 41 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0135 | Valid Loss 4.3840 | Train Acc 99.5586| Valid Acc 46.6865
+TestSub: S[6, 7, 8, 9, 10] Epoch 42 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0139 | Valid Loss 4.4940 | Train Acc 99.5495| Valid Acc 46.3339
+TestSub: S[6, 7, 8, 9, 10] Epoch 43 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0143 | Valid Loss 4.4761 | Train Acc 99.5264| Valid Acc 47.5012
+TestSub: S[6, 7, 8, 9, 10] Epoch 44 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0138 | Valid Loss 4.4616 | Train Acc 99.5550| Valid Acc 47.4860
+TestSub: S[6, 7, 8, 9, 10] Epoch 45 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0138 | Valid Loss 4.2777 | Train Acc 99.5300| Valid Acc 47.5043
+TestSub: S[6, 7, 8, 9, 10] Epoch 46 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0134 | Valid Loss 4.4170 | Train Acc 99.5647| Valid Acc 47.0422
+TestSub: S[6, 7, 8, 9, 10] Epoch 47 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0137 | Valid Loss 4.2796 | Train Acc 99.5458| Valid Acc 47.5924
+TestSub: S[6, 7, 8, 9, 10] Epoch 48 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0127 | Valid Loss 4.3732 | Train Acc 99.5908| Valid Acc 48.5165
+TestSub: S[6, 7, 8, 9, 10] Epoch 49 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0136 | Valid Loss 4.3354 | Train Acc 99.5513| Valid Acc 48.1791
+TestSub: S[6, 7, 8, 9, 10] Epoch 50 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0126 | Valid Loss 4.3922 | Train Acc 99.6000| Valid Acc 46.4981
+TestSub: S[6, 7, 8, 9, 10] Epoch 51 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0125 | Valid Loss 4.4128 | Train Acc 99.5823| Valid Acc 47.2793
+TestSub: S[6, 7, 8, 9, 10] Epoch 52 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0115 | Valid Loss 4.4190 | Train Acc 99.6206| Valid Acc 47.6411
+TestSub: S[6, 7, 8, 9, 10] Epoch 53 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0131 | Valid Loss 4.2889 | Train Acc 99.5762| Valid Acc 47.3644
+TestSub: S[6, 7, 8, 9, 10] Epoch 54 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0107 | Valid Loss 4.7843 | Train Acc 99.6535| Valid Acc 46.9328
+TestSub: S[6, 7, 8, 9, 10] Epoch 55 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0118 | Valid Loss 4.6451 | Train Acc 99.6072| Valid Acc 47.6623
+TestSub: S[6, 7, 8, 9, 10] Epoch 56 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0106 | Valid Loss 4.6820 | Train Acc 99.6516| Valid Acc 48.0332
+TestSub: S[6, 7, 8, 9, 10] Epoch 57 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0107 | Valid Loss 4.7258 | Train Acc 99.6510| Valid Acc 47.1911
+TestSub: S[6, 7, 8, 9, 10] Epoch 58 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0108 | Valid Loss 4.4693 | Train Acc 99.6407| Valid Acc 45.2669
+TestSub: S[6, 7, 8, 9, 10] Epoch 59 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0115 | Valid Loss 4.3559 | Train Acc 99.6407| Valid Acc 46.1971
+TestSub: S[6, 7, 8, 9, 10] Epoch 60 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0102 | Valid Loss 4.0548 | Train Acc 99.6601| Valid Acc 48.0028
+TestSub: S[6, 7, 8, 9, 10] Epoch 61 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0100 | Valid Loss 4.5923 | Train Acc 99.6960| Valid Acc 47.6228
+TestSub: S[6, 7, 8, 9, 10] Epoch 62 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0105 | Valid Loss 4.4535 | Train Acc 99.6553| Valid Acc 47.2063
+TestSub: S[6, 7, 8, 9, 10] Epoch 63 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0103 | Valid Loss 4.5217 | Train Acc 99.6632| Valid Acc 48.3220
+TestSub: S[6, 7, 8, 9, 10] Epoch 64 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0100 | Valid Loss 4.4788 | Train Acc 99.6845| Valid Acc 47.0483
+TestSub: S[6, 7, 8, 9, 10] Epoch 65 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0101 | Valid Loss 4.6755 | Train Acc 99.6674| Valid Acc 48.0089
+TestSub: S[6, 7, 8, 9, 10] Epoch 66 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0096 | Valid Loss 4.8162 | Train Acc 99.6875| Valid Acc 46.2792
+TestSub: S[6, 7, 8, 9, 10] Epoch 67 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0104 | Valid Loss 4.4679 | Train Acc 99.6832| Valid Acc 47.7049
+TestSub: S[6, 7, 8, 9, 10] Epoch 68 Finsh | Now_lr 0.0005/0.0005|Train Loss 0.0097 | Valid Loss 4.3341 | Train Acc 99.6869| Valid Acc 48.7384

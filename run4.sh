@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=eeg-train          # Job name
 #SBATCH --partition=gpu               # Partition name on your cluster
-#SBATCH --gres=gpu:1                  # Number of GPUs
-#SBATCH --nodelist=gpu007
-#SBATCH --cpus-per-task=16            # (optional) CPU cores per task                    
-#SBATCH --time=24:00:00              # Max run time (hh:mm:ss)
+#SBATCH --gres=gpu:1                 # Number of GPUs
+#SBATCH --nodelist=gpu006
+#SBATCH --cpus-per-task=24            # CPU cores per task                    
+#SBATCH --time=72:00:00               # Max run time (48 hours)
 #SBATCH --output=slurm-%j.out         # STDOUT file
 #SBATCH --error=slurm-%j.err          # STDERR file
 
@@ -19,13 +19,12 @@ conda activate eegenv
 # Move to the working directory
 cd /scratch/$USER/EEG-AAD/eeg-aad-challenge2026-task1-baselines-master
 
+echo "Job started at: $(date)"
+echo "Running on node: $(hostname)"
+echo "GPU allocation: $CUDA_VISIBLE_DEVICES"
 
 # --- Run your training script ---
-#CUDA_VISIBLE_DEVICES=0 python -u trainer2.py &
-CUDA_VISIBLE_DEVICES=1 python -u trainer3.py &
-# python -u trainer2.py
-# python -u trainer3.py 
+# Since you have 1 GPU, use GPU 0 (not GPU 1)
+CUDA_VISIBLE_DEVICES=0 python -u trainer4.py
 
-
-
-
+echo "Job finished at: $(date)"
