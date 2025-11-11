@@ -1,3 +1,4 @@
+# Darnet feature -8 and dwt features -300
 import os
 import json
 import pandas as pd
@@ -94,7 +95,7 @@ def main():
 
     print("TRAIN HYBRID ML: XGBoost + SVM + Random Forest (FOLD 1)")
 
-    print("(LaBraM 200 + DWT 300 = 500 features)")
+    print("(Darnet 8 + DWT 300 = 308 features)")
 
     try:
         print("LOADING CONCATENATED FEATURES")
