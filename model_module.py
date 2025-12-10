@@ -251,7 +251,17 @@ class DARNet(nn.Module):
         if self.use_domain_adversarial:
             self.lambda_domain = getattr(args, 'lambda_domain', 0.1)
             self.gradient_reversal = GradientReversalLayer(lambda_=self.lambda_domain)
-            self.subject_discriminator = SubjectDiscriminator(feature_dim=8, num_subjects=30)
+            # Get number of subjects from args (MM-AAD: 30, KUL: 16, DTU: 18, AVED: 10)
+            num_subjects = getattr(args, 'subject_number', 30)
+            if hasattr(args, 'dataset') and args.dataset == 'KUL':
+                num_subjects = 16
+            elif hasattr(args, 'dataset') and args.dataset == 'MM-AAD':
+                num_subjects = 30
+            elif hasattr(args, 'dataset') and args.dataset == 'DTU':
+                num_subjects = 18
+            elif hasattr(args, 'dataset') and (args.dataset == 'AVED-audio' or args.dataset == 'AVED-audiovisual'):
+                num_subjects = 10
+            self.subject_discriminator = SubjectDiscriminator(feature_dim=8, num_subjects=num_subjects)
         
         # Contrastive Learning Components
         self.use_contrastive = getattr(args, 'use_contrastive', False)

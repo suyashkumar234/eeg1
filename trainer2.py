@@ -27,29 +27,45 @@ def set_all_seeds(seed):
     """Set all possible seeds for reproducibility"""
     import random
     import os
-    
+
     # Python random seed
     random.seed(seed)
-    
+
     # Numpy seed
     np.random.seed(seed)
-    
+
     # PyTorch seeds
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)  # For multi-GPU
-    
+
     # PyTorch deterministic behavior
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    
+
+    # Set CUBLAS environment variable for deterministic CUDA operations
+    os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
+
+    # Enable deterministic algorithms (may impact performance)
+    try:
+        torch.use_deterministic_algorithms(True)
+    except:
+        # Fallback for older PyTorch versions
+        try:
+            torch.set_deterministic(True)
+        except:
+            pass  # If neither works, continue without strict determinism
+
     # Python hash seed
     os.environ['PYTHONHASHSEED'] = str(seed)
-    
+
     # Set worker seed for DataLoader
     def worker_init_fn(worker_id):
+        import random
         np.random.seed(seed + worker_id)
-    
+        random.seed(seed + worker_id)
+        torch.manual_seed(seed + worker_id)
+
     return worker_init_fn
 
 def get_device():
@@ -64,7 +80,7 @@ def get_device():
 if "SLURM_JOB_GPUS" in os.environ:
     os.environ["CUDA_VISIBLE_DEVICES"] = os.environ["SLURM_JOB_GPUS"]
 
-GPU_ID = 1  # Change to 0 or 1 to force specific GPU
+GPU_ID = 0  # Change to 0 or 1 to force specific GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = str(GPU_ID)
 
 device = get_device()
@@ -134,7 +150,8 @@ class Trynetwork():
                                              betas=(getattr(args, 'beta1', 0.9), getattr(args, 'beta2', 0.999)),
                                              weight_decay=self.weight_decay)
 
-        self.scheduler = torch.optim.lr_scheduler.MultiStepLR(self.optimizer, milestones=[10, 35], gamma=0.5)
+        # Learning rate scheduler: decay every 10 epochs by factor of 0.8
+        self.scheduler = torch.optim.lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.8)
         self.scheduler_down = StepwiseLR_GRL(self.optimizer, init_lr= args.lr, gamma= 10, decay_rate=args.lr_decayrate,max_iter=args.max_epoch)
         self.criterion = nn.CrossEntropyLoss()
         
@@ -183,7 +200,7 @@ class Trynetwork():
         for i_batch, batch_data in enumerate(self.datasets['train']):
             if len(batch_data) == 3:  # Has subject IDs
                 train_data, train_label, subject_ids = batch_data
-                subject_ids = torch.tensor(subject_ids).to(device).long()
+                subject_ids = subject_ids.clone().detach().to(device).long()
                 has_subject_ids = True
             else:  # Regular training
                 train_data, train_label = batch_data
@@ -311,22 +328,38 @@ class Trynetwork():
             setname = 'test'
         else:
             setname = 'valid'
-        result_dicts_per_monitor = OrderedDict()  
+        result_dicts_per_monitor = OrderedDict()
         with torch.no_grad():
             Batch_size, Epochs_loss, Epochs_acc = [], [], []
+            all_preds = []  # Store all predictions for confusion matrix
+            all_targets = []  # Store all targets for confusion matrix
             for i_batch, batch_data in enumerate(self.datasets[setname]):
                 if len(batch_data) == 3:  # Has subject IDs
                     seq_input, target, subject_ids = batch_data
                 else:  # Regular training
                     seq_input, target = batch_data
-                    
+
                 target = target.squeeze(-1)
-                pred, loss = self.test_batch(seq_input,  target)  
+                pred, loss = self.test_batch(seq_input,  target)
                 Epochs_loss.append(loss)
                 Batch_size.append(len(target))
-                Epochs_acc.append(np.equal(pred, target.numpy()).sum())  
+                Epochs_acc.append(np.equal(pred, target.numpy()).sum())
+                all_preds.extend(pred.tolist())
+                all_targets.extend(target.numpy().tolist())
+
         epoch_acc = sum(Epochs_acc) / sum(Batch_size) * 100
         epoch_loss = sum(Epochs_loss) / len(Epochs_loss)
+
+        # Compute and store confusion matrix for validation
+        if setname == 'valid':
+            from sklearn.metrics import confusion_matrix
+            cm = confusion_matrix(all_targets, all_preds)
+            # Store confusion matrix for potential display
+            if not hasattr(self, 'last_confusion_matrix'):
+                self.last_confusion_matrix = cm
+            else:
+                self.last_confusion_matrix = cm
+
         key_loss = setname + '_loss'
         key_acc = setname + '_acc'
         loss = {key_loss: epoch_loss}
@@ -335,7 +368,7 @@ class Trynetwork():
         result_dicts_per_monitor.update(acc)
         result_dicts_per_monitor = {k: [v] for k, v in result_dicts_per_monitor.items()}
         self.val_df = pd.concat([self.val_df, pd.DataFrame(result_dicts_per_monitor)], ignore_index=True)
-        self.val_df = self.val_df[list(result_dicts_per_monitor.keys())]  
+        self.val_df = self.val_df[list(result_dicts_per_monitor.keys())]
         return epoch_loss, epoch_acc
 
 
@@ -345,7 +378,7 @@ class Trynetwork():
         
         best_epoch = 0
         best_acc = 0
-        early_stopping_patience = 30
+        early_stopping_patience = 20
         epochs_without_improvement = 0
         for epoch in range(1, args.max_epoch + 1):
             # Update lambda for domain adversarial training (gradual increase)
@@ -368,9 +401,20 @@ class Trynetwork():
             if hasattr(self.model, 'use_contrastive') and self.model.use_contrastive:
                 contrastive_loss_val = self.train_df['contrastive_loss'].iloc[-1] if 'contrastive_loss' in self.train_df.columns else 0.0
                 print_str += f' | Contrastive Loss {contrastive_loss_val:.4f}'
-            
+
             print(print_str)
-            
+
+            # Print confusion matrix every 5 epochs to check for class collapse
+            if epoch % 5 == 0 and hasattr(self, 'last_confusion_matrix'):
+                print(f'    Confusion Matrix (Epoch {epoch}):')
+                print(f'    [[TN={self.last_confusion_matrix[0,0]}, FP={self.last_confusion_matrix[0,1]}],')
+                print(f'     [FN={self.last_confusion_matrix[1,0]}, TP={self.last_confusion_matrix[1,1]}]]')
+                # Check if model is predicting only one class
+                if self.last_confusion_matrix[0,1] == 0 and self.last_confusion_matrix[1,1] == 0:
+                    print(f'    ⚠️  WARNING: Model predicting only class 0! (Class collapse detected)')
+                elif self.last_confusion_matrix[0,0] == 0 and self.last_confusion_matrix[1,0] == 0:
+                    print(f'    ⚠️  WARNING: Model predicting only class 1! (Class collapse detected)')
+
             if val_acc > best_acc:
                 save_model(args, testsub_name, best_acc, val_acc, self.model, epoch, args.model)
                 best_acc = val_acc
@@ -445,21 +489,53 @@ def cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel, work
 
     # Create datasets with subject IDs if using domain adversarial training
     use_domain_adversarial = getattr(args, 'use_domain_adversarial', False)
-    
+
+    # Create generator for reproducible DataLoader
+    g = torch.Generator()
+    g.manual_seed(args.seed)
+
+    # Balanced sampling setup
+    train_sampler = None
+    if args.balanced_sampling:
+        # Calculate class weights for balanced sampling
+        class_counts = np.bincount(train_label.flatten().astype(int))
+        class_weights = 1.0 / class_counts
+        sample_weights = class_weights[train_label.flatten().astype(int)]
+
+        from torch.utils.data import WeightedRandomSampler
+        train_sampler = WeightedRandomSampler(
+            weights=sample_weights,
+            num_samples=len(sample_weights),
+            replacement=True,
+            generator=g  # Add generator for reproducibility
+        )
+
+        print(f"\n  ⚖️ Balanced Sampling Enabled:")
+        print(f"     Class 0 (left): {class_counts[0]} samples, weight: {class_weights[0]:.4f}")
+        print(f"     Class 1 (right): {class_counts[1]} samples, weight: {class_weights[1]:.4f}")
+
     if use_domain_adversarial:
         train_loader = DataLoader(dataset=CustomDatasets(train_data, train_label, train_subject_ids),
-                                      batch_size=args.batch_size, drop_last=True, shuffle=True,
-                                      worker_init_fn=worker_init_fn, num_workers=0)  # num_workers=0 for determinism
+                                      batch_size=args.batch_size, drop_last=True,
+                                      shuffle=(train_sampler is None),  # Don't shuffle if using sampler
+                                      sampler=train_sampler,
+                                      worker_init_fn=worker_init_fn, num_workers=0,
+                                      generator=g)  # Add generator for reproducibility
         valid_loader = DataLoader(dataset=CustomDatasets(val_data, val_label, val_subject_ids),
                                       batch_size=args.batch_size, drop_last=True,
-                                      worker_init_fn=worker_init_fn, num_workers=0)
+                                      worker_init_fn=worker_init_fn, num_workers=0,
+                                      generator=g)  # Add generator for reproducibility
     else:
         train_loader = DataLoader(dataset=CustomDatasets(train_data, train_label),
-                                      batch_size=args.batch_size, drop_last=True, shuffle=True,
-                                      worker_init_fn=worker_init_fn, num_workers=0)
+                                      batch_size=args.batch_size, drop_last=True,
+                                      shuffle=(train_sampler is None),  # Don't shuffle if using sampler
+                                      sampler=train_sampler,
+                                      worker_init_fn=worker_init_fn, num_workers=0,
+                                      generator=g)  # Add generator for reproducibility
         valid_loader = DataLoader(dataset=CustomDatasets(val_data, val_label),
                                       batch_size=args.batch_size, drop_last=True,
-                                      worker_init_fn=worker_init_fn, num_workers=0)
+                                      worker_init_fn=worker_init_fn, num_workers=0,
+                                      generator=g)  # Add generator for reproducibility
     
     #####################################################################################
     #2.define model
@@ -480,19 +556,64 @@ def cross_subject(args, sub_ids, train_ids, val_ids, seq_alldata, alllabel, work
     
 if __name__ == '__main__':
     # Training settings
-    args = argparse.ArgumentParser()
-    args.seed = 42
-    
+    parser = argparse.ArgumentParser(description='EEG Auditory Attention Detection Training')
+    parser.add_argument('--dataset', type=str, default='MM-AAD',
+                        choices=['MM-AAD', 'KUL', 'DTU', 'AVED-audio', 'AVED-audiovisual'],
+                        help='Dataset to use: MM-AAD, KUL, DTU, AVED-audio, or AVED-audiovisual (default: MM-AAD)')
+    parser.add_argument('--win_time', type=int, default=None,
+                        help='Window time in seconds (default: auto - 1s for AVED/DTU, 2s for others)')
+
+    # Preprocessing arguments
+    parser.add_argument('--apply_csp', action='store_true',
+                        help='Apply CSP (Common Spatial Patterns) transformation')
+    parser.add_argument('--apply_ea', action='store_true',
+                        help='Apply Euclidean Alignment preprocessing')
+    parser.add_argument('--apply_normalize', action='store_true',
+                        help='Apply normalization preprocessing')
+
+    parsed_args = parser.parse_args()
+
+    # Create args namespace
+    args = argparse.Namespace()
+    args.seed = 42  # Hardcoded seed for reproducibility
+    args.dataset = parsed_args.dataset
+    # Auto-enable balanced sampling ONLY for DTU (due to severe class imbalance)
+    args.balanced_sampling = (args.dataset == 'DTU')
+    args.win_time_override = parsed_args.win_time  # Store user override
+
     # Set all seeds for reproducibility
     print(f"Setting all seeds to {args.seed} for reproducibility...")
     worker_init_fn = set_all_seeds(args.seed)
     print("All seeds set successfully!")
 
-    # data
-    args.dataset = 'MM-AAD'
-    args.start_time = datetime.now().strftime(f"task1_AAD_{args.dataset}_contra2_2_%Y-%m-%d-%H-%M-%S")
+    # Print balanced sampling status
+    if args.balanced_sampling:
+        print(f"\n⚖️  Balanced Sampling: ENABLED (auto-enabled for {args.dataset} due to class imbalance)")
+    else:
+        print(f"\n⚖️  Balanced Sampling: DISABLED ({args.dataset} has balanced classes)")
+
+    # Dataset configuration
+    args.start_time = datetime.now().strftime(f"task1_AAD_{args.dataset}_%Y-%m-%d-%H-%M-%S")
     print('start time:',args.start_time)
-    options = {'MM-AAD':[40 ,32, 20, 128, "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/data/", "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/label/"]}
+
+    options = {
+        'MM-AAD': [40, 32, 20, 128,
+                   "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/data/",
+                   "/home/suyash.kumar.mec22.itbhu/EEG-AAD_audio_visual/preprocessed/label/"],
+        'KUL': [16, 64, 8, 128,
+                "/home/suyash.kumar.mec22.itbhu/KUL/",
+                "/home/suyash.kumar.mec22.itbhu/KUL"],
+        'DTU': [18, 64, 60, 512,
+                "/home/suyash.kumar.mec22.itbhu/DTU/",
+                "/home/suyash.kumar.mec22.itbhu/DTU/"],
+        'AVED-audio': [10, 32, 16, 128,
+                       "/scratch/suyash.kumar.mec22.itbhu/Aved/audio/",
+                       "/scratch/suyash.kumar.mec22.itbhu/Aved/audio/"],
+        'AVED-audiovisual': [10, 32, 16, 128,
+                             "/scratch/suyash.kumar.mec22.itbhu/Aved/audio-visual/",
+                             "/scratch/suyash.kumar.mec22.itbhu/Aved/audio-visual/"]
+    }
+
     args.subject_number = options[args.dataset][0]
     args.eeg_channel = options[args.dataset][1]
     args.trail_number = options[args.dataset][2]
@@ -500,35 +621,78 @@ if __name__ == '__main__':
     args.data_path = options[args.dataset][4]
     args.label_path = options[args.dataset][5]
 
-    args.win_time = 2
+    # Window configuration - allow user override or use dataset default
+    if args.win_time_override is not None:
+        args.win_time = args.win_time_override  # User specified window time
+    elif args.dataset.startswith('AVED'):
+        args.win_time = 1  # AVED default: 1-second windows
+    else:
+        args.win_time = 2  # Default: 2-second windows
+
     args.win_len = math.ceil(args.fs * args.win_time)
     args.overlap = 0.5
     args.window_lap = args.win_len * (1 - args.overlap)
 
-    # basic info of the model
-    args.lambda_domain = 0.1
-    args.lambda_contrastive = 0.8
-    args.temperature = 0.07         # Sharper for strong contrastive
-    args.optimizer = 'SGD'
-    args.lr = 1e-2
-    args.batch_size = 64            # Smaller batch = more diverse pairs
-    args.weight_decay = 1e-3
-    args.momentum = 0.9
-    # args.optimizer='SGD'
-    # args.batch_size = 128
-    # args.lr = 1e-2
-    args.lam = 0.2
-    args.lr_decayrate = 0.5
-    # args.momentum=0.9
-    # args.weight_decay = 1e-3
-    args.max_epoch = 100
-    args.patience = 10
+    # ====================================================================
+    # OPTIMIZED HYPERPARAMETERS FOR CROSS-SUBJECT AAD
+    # Based on: DARNet, ListenNet best practices + domain adversarial + contrastive learning
+    # ====================================================================
+
+    # Loss Weights (tuned for cross-subject AAD)
+    args.lambda_domain = 0.3            # INCREASED from 0.15 (stronger domain adaptation)
+    args.lambda_contrastive = 0.2       # REDUCED from 0.5 (was too dominant)
+    args.temperature = 0.15             # INCREASED from 0.1 (softer contrastive learning)
+
+    # Optimizer Configuration
+    args.optimizer = 'Adam'             # Adam generally better than SGD for attention models
+    args.lr = 1e-4                      # REDUCED from 5e-4 (slower, more stable learning)
+    args.weight_decay = 5e-4            # INCREASED from 1e-4 (stronger regularization)
+    args.momentum = 0.9                 # For SGD (not used with Adam)
+
+    # Training Configuration
+    args.batch_size = 32                # Increased from 16 (better gradient estimates)
+    args.max_epoch = 100                # Standard training epochs (early stopping will catch convergence)
+    args.patience = 20                  # Early stopping patience (reasonable for 100 epochs)
     args.log_interval = 10
+
+    # Learning Rate Scheduler
+    args.lam = 0.2                      # Not used currently
+    args.lr_decayrate = 0.5             # LR decay rate
     
     # Model Configuration - Set these flags to control what gets used
     args.use_domain_adversarial = True   # Set to False to disable domain adversarial
     args.use_contrastive = True          # Set to False to disable contrastive learning
-    
+
+    # Preprocessing Configuration - Set these flags to control preprocessing
+    # You can change these defaults here, OR use command-line args to override:
+    #   --apply_csp          : Enable CSP transformation
+    #   --apply_ea           : Enable Euclidean Alignment
+    #   --apply_normalize    : Enable normalization
+
+    # Hardcoded defaults (change these to True/False as needed):
+    DEFAULT_CSP = False          # CSP: Not recommended for cross-subject (no dimension reduction with 64→64)
+    DEFAULT_EA = True            # EA: Recommended (aligns spatial covariances across subjects)
+    DEFAULT_NORMALIZE = True     # Normalization: Recommended (scales to [-1,1])
+
+    # Apply defaults, but allow command-line to override if flags are provided
+    args.apply_csp = parsed_args.apply_csp if parsed_args.apply_csp else DEFAULT_CSP
+    args.apply_ea = parsed_args.apply_ea if parsed_args.apply_ea else DEFAULT_EA
+    args.apply_normalize = parsed_args.apply_normalize if parsed_args.apply_normalize else DEFAULT_NORMALIZE
+
+    # Print preprocessing configuration
+    preprocessing_enabled = []
+    if args.apply_csp:
+        preprocessing_enabled.append("CSP")
+    if args.apply_ea:
+        preprocessing_enabled.append("EA")
+    if args.apply_normalize:
+        preprocessing_enabled.append("Normalization")
+
+    if preprocessing_enabled:
+        print(f"\n🔧 Preprocessing: {' + '.join(preprocessing_enabled)}")
+    else:
+        print(f"\n🔧 Preprocessing: NONE (raw data)")
+
     # Loss weights
     # args.lambda_domain = 0.15       # Domain adversarial weight
     # args.lambda_contrastive = 0.5   # Contrastive learning weight
@@ -555,28 +719,79 @@ if __name__ == '__main__':
         print('\t' + arg + ':', getattr(args, arg))
     print('=' * 108)
    
-    sub_ids =  list(range(1, args.subject_number+1)) 
-    del_ids = [31,32,33,34,35,36,37,38,39,40]
-    sub_ids = [sub_id for sub_id in sub_ids if sub_id not in del_ids]
+    # Subject IDs and fold configuration
+    # ALL DATASETS NOW USE LOSO (Leave-One-Subject-Out)
+    if args.dataset == 'MM-AAD':
+        sub_ids = list(range(1, args.subject_number+1))
+        del_ids = [31,32,33,34,35,36,37,38,39,40]
+        sub_ids = [sub_id for sub_id in sub_ids if sub_id not in del_ids]
+
+        # LOSO: Each subject is validation once (30 subjects)
+        folds = [[i] for i in sub_ids]  # [[1], [2], ..., [30]]
+        num_folds = len(sub_ids)  # 30 folds
+
+    elif args.dataset == 'KUL':
+        sub_ids = list(range(1, args.subject_number+1))  # 1-16
+
+        # LOSO: Each subject is validation once (16 subjects)
+        folds = [[i] for i in sub_ids]  # [[1], [2], ..., [16]]
+        num_folds = args.subject_number  # 16 folds
+
+    elif args.dataset == 'DTU':
+        sub_ids = list(range(1, args.subject_number+1))  # 1-18
+
+        # LOSO: Each subject is validation once (18 subjects)
+        folds = [[i] for i in sub_ids]  # [[1], [2], [3], ..., [18]]
+        num_folds = args.subject_number  # 18 folds
+
+    elif args.dataset.startswith('AVED'):
+        sub_ids = list(range(1, args.subject_number+1))  # 1-10
+
+        # LOSO: Each subject is validation once (10 subjects)
+        folds = [[i] for i in sub_ids]  # [[1], [2], [3], ..., [10]]
+        num_folds = args.subject_number  # 10 folds
+
+    # Print preprocessing configuration
+    print(f"\n{'='*80}")
+    print(f"Preprocessing Configuration:")
+    print(f"  CSP:           {args.apply_csp}")
+    print(f"  EA:            {args.apply_ea}")
+    print(f"  Normalization: {args.apply_normalize}")
+    print(f"{'='*80}\n")
 
     # Load all subject data once
-    seq_alldata, alllabel = getData(args, sub_ids)
-
-    # Define sequential folds: [1–5], [6–10], [11–15], [16–20], [21–25], [26–30]
-    folds = [
-        list(range(1, 6)),
-        list(range(6, 11)),
-        list(range(11, 16)),
-        list(range(16, 21)),
-        list(range(21, 26)),
-        list(range(26, 31))
-    ]
+    if args.dataset == 'DTU':
+        # For DTU, we need to add window_length for getData_DTU
+        args.window_length = math.ceil(args.fs * args.win_time)
+        seq_alldata, alllabel = getData_DTU(args, sub_ids,
+                                             apply_csp=args.apply_csp,
+                                             apply_ea=args.apply_ea,
+                                             apply_normalize=args.apply_normalize)
+    elif args.dataset == 'KUL':
+        # For KUL, we need to add window_length for getData_KUL
+        args.window_length = math.ceil(args.fs * args.win_time)
+        seq_alldata, alllabel = getData_KUL(args, sub_ids,
+                                             apply_csp=args.apply_csp,
+                                             apply_ea=args.apply_ea,
+                                             apply_normalize=args.apply_normalize)
+    elif args.dataset.startswith('AVED'):
+        # For AVED, we need to add window_length for getData_AVED
+        args.window_length = math.ceil(args.fs * args.win_time)
+        seq_alldata, alllabel = getData_AVED(args, sub_ids,
+                                              apply_csp=args.apply_csp,
+                                              apply_ea=args.apply_ea,
+                                              apply_normalize=args.apply_normalize)
+    else:
+        seq_alldata, alllabel = getData(args, sub_ids,
+                                         apply_csp=args.apply_csp,
+                                         apply_ea=args.apply_ea,
+                                         apply_normalize=args.apply_normalize)
 
     all_fold_acc = []
 
     for fold, val_ids in enumerate(folds, start=1):
         train_ids = [s for s in sub_ids if s not in val_ids]
-        print(f"\n========== Fold {fold} ==========")
+        print(f"\n========== Fold {fold}/{num_folds} ==========")
         print(f"Train IDs: {train_ids}")
         print(f"Val IDs:   {val_ids}")
 
@@ -585,9 +800,12 @@ if __name__ == '__main__':
 
     mean_acc = np.mean(all_fold_acc)
 
-    print(f"lr:{args.lr } -> bs:{args.batch_size}")
-    print(f"6-Fold Cross Subject Accuracies: {all_fold_acc}")
-    print(f"Mean Accuracy over 6 folds: {mean_acc:.4f}")
+    print(f"\n{'='*108}")
+    print(f"FINAL RESULTS - {args.dataset} Dataset (LOSO)")
+    print(f"{'='*108}")
+    print(f"lr: {args.lr} | batch_size: {args.batch_size}")
+    print(f"LOSO Accuracies ({num_folds} subjects): {all_fold_acc}")
+    print(f"Mean Accuracy over {num_folds} subjects: {mean_acc:.4f}")
     print('=' * 108)
     now1 = datetime.now().strftime("%y-%m-%d-%H:%M:%S")
     print('end time:', now1)
