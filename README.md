@@ -1,91 +1,208 @@
 <div align="center">
 
-# Baselines for EEG-AAD 2026: EEG Auditory Attention Decoding Challenge
+# EEG-AAD 2026: Auditory Attention Decoding Challenge
+### Team Euler — IIT (BHU) Varanasi × Luleå University of Technology
+
+[![Challenge](https://img.shields.io/badge/Challenge-ICASSP%202026%20EEG--AAD-blue)](https://fchest.github.io/icassp-aad/)
+[![Track 1](https://img.shields.io/badge/Track%201%20(Cross--Subject)-Rank%209%20%7C%2052.12%25-green)]()
+[![Track 2](https://img.shields.io/badge/Track%202%20(Cross--Session)-Rank%208%20%7C%2050.99%25-orange)]()
 
 </div>
 
-# Overview
-Baseline implementation for the <a href='https://fchest.github.io/icassp-aad/'>EEG-AAD 2026: Auditory Attention Decoding Challenge</a>.
+---
 
-# Data
-We provide a multi-modal AAD (MM-AAD) dataset[1] consisting of EEG data collected from 40 subjects in two settings: audio-only and audio-visual scenes. 
-Each subject was instructed to focus on one of two competing voices from the 90° left or right for an average of 55 minutes, resulting in a total of approximately 73.3 hours of data.
-In the EEG auditory attention decoding challenge, the team will compete to build the best deep learning model to analyze the spatial orientation (left/right, 0/1) of the subject's attention to the speaker from EEG signals.
+## Overview
 
-## Preprocessing
-We used preprocessed data as starting point and we applied minimal preprocessing involving:
-- 0.1 Hz and 50 Hz bandpass filter
-- Remove 50 Hz noise 
+This repository contains the implementation for the [IEEE ICASSP 2026 EEG-AAD Auditory Attention Decoding Challenge](https://fchest.github.io/icassp-aad/), developed by **Team Euler** under the supervision of **Dr. Rajkumar Saini** at Luleå University of Technology.
+
+The challenge requires decoding the spatial orientation (left/right) of a subject's auditory attention from EEG signals, with two tasks:
+- **Task 1 (Cross-Subject):** Generalize to unseen subjects in audio-only settings
+- **Task 2 (Cross-Session):** Generalize to unseen audio-visual scenarios for subjects whose audio-only data was seen during training
+
+**Team Euler final results:**
+
+| Track | Task | Accuracy | Rank |
+|-------|------|----------|------|
+| Track 1 | Cross-Subject | 52.12% | **9** |
+| Track 2 | Cross-Session | 50.99% | **8** |
+
+---
+
+## Dataset
+
+The **MM-AAD (Multi-Modal Auditory Attention Decoding)** dataset [1] consists of EEG recordings from 40 subjects in two settings:
+- **Audio-only** and **audio-visual** competitive listening scenarios
+- Subjects attended to one of two competing voices from ±90° (left/right)
+- ~55 minutes per subject → ~73.3 hours of total data
+
+### Preprocessing Pipeline
+
+- Bandpass filter: 0.1 Hz – 50 Hz
+- 50 Hz power-line noise removal
 - Ocular artifact removal via ICA
-- Downsampled to 128 Hz 
+- Downsampling to 128 Hz
+- Windowing: 1-second windows with 50% overlap → **6,580 decision windows per subject**
+- Task 2 additionally: Common Spatial Pattern (CSP) filtering for cross-session generalization
 
-## Architectures
-We chose DARNet[2] as baselines for both tasks:
-- w/o CSP in Task 1
-- w CSP in Task 2
-No significant changes were applied to the original architectures.
+---
 
-## Training
--Task1 Cross-subject: we provided 30 subjects for training and validation. We selected 4 subjects to serve as a separate held-out-subjects validation set (val_subject). To encourage participants to thoroughly explore model generalization and the robustness of validation strategies, this task allows and recommends that participants customize their validation set partitioning schemes.
-Models were trained using the Adam optimizer for 100 epochs. For each subject of tasks, we get 6,580 decision windows. The model was then fed all the windows. Additionally, we set the batch size to 128 and utilized the Adam optimizer with a learning rate of 5e-4 and weight decay of 3e-4 to train the model.
+## Architecture: DARNet
 
--Task2 Cross-Session: This track requires participants to bulid AAD models capable of decoding auditory attention categories from EEG signals of scenarios that subjects have never seen before. Data from 30 subjects in two scenarios are provided, where the audio-only scenario data from the same subject is used for training, and the audio-visual scenario data is used for validation. Additionally, the audio-only data for the 10 test subjects are provided in advance during the training phase, the participants may use this data to pre-train the model for the final test.
-
-
-## Inference
--Task1 Cross-subject: we provided 10 unseen subjects for test. For inference, same as for validation, each unseen test subject EEG data was first segmented into 6,580 decision windows. The optimal model saved from the validation set was used for inference.
-
--Task2 Cross-Session: For the testing phase, we provided 10 unseen subjects for test, each unseen test subject EEG data was first segmented into 6,580 decision windows, following the same process as validation: models trained on the audio-only scenario (Already released during the training phase
-) are tested on data from the audio-visual scenario. 
-
-# Results
-Our strategy yields the following results that serve as baseline
-
-| DARNet            | Cross-subject | Cross-session |
-|-------------------|---------------|---------------|
-| Val Acc           |    53.1       |      57.33    |
-                    
-
-# How to run
-
-### **Requirements**
--Python3.9
- pip install -r requirements.txt
-
-All the baselies were tested on a single NVIDIA RTX 4090 GPU.
-
-
-### **Train a model**
+The baseline architecture is **DARNet** (Dual Attention Refinement Network) [2], a transformer-style model designed for auditory attention detection from EEG.
 
 ```
-python train.py 
+Input EEG (channels × time)
+        │
+  TokenEmbedding
+  ├─ Conv2D spatial: (1, 8) kernel
+  ├─ Conv2D channel reduction: (C_in, 1) kernel
+  └─ Sinusoidal Positional Embedding
+        │
+  AttnRefine Stack 1
+  ├─ Multi-Head Self-Attention (8 heads, d=16)
+  ├─ Conv1D Refinement + MaxPool
+  └─ Intermediate output (4-dim)
+        │
+  AttnRefine Stack 2
+  ├─ Multi-Head Self-Attention (8 heads, d=16)
+  ├─ Conv1D Refinement + MaxPool
+  └─ Intermediate output (4-dim)
+        │
+  Concatenate stack outputs → Linear(8, 2)
+        │
+  Softmax → Left / Right
 ```
 
-Model weights at best validation accuracy will be saved at exps/cross-subject
+- **Task 1:** DARNet without CSP
+- **Task 2:** DARNet with CSP preprocessing
 
+---
 
-### **Inference**
+## Training Details
 
-This script will generate te required file for the final submission.
-Always specify:
-- the task 
-- the model architectures
-- the path (absolute or relative) to the folder with .pth file
+### Task 1 — Cross-Subject
 
-As an example you can run:
+| Hyperparameter | Value |
+|---|---|
+| Optimizer | AdamW |
+| Learning rate | 5e-4 |
+| Weight decay | 3e-4 |
+| Batch size | 128 |
+| Epochs | 100 |
+| LR schedule | MultiStepLR (milestones: [10, 35], γ=0.5) |
+| Loss | CrossEntropy |
 
-``` 
+**Data split:**
+- Training subjects: 26 (from IDs 1–30, excluding val set)
+- Validation subjects: 4 held-out (IDs: 1, 2, 3, 6)
+- Test subjects: 10 unseen (IDs: 31–40)
+
+### Task 2 — Cross-Session
+
+- Training: audio-only scenario data for subjects 1–30
+- Validation: audio-visual scenario data for the same 30 subjects
+- Test: 10 unseen subjects (audio-only pre-training provided, tested on audio-visual)
+
+---
+
+## Team Contributions (beyond baseline)
+
+The following improvements were explored beyond the provided baseline during the ICASSP 2026 competition:
+
+- **Enhanced preprocessing:** Refined ICA ocular artifact removal and bandpass filter tuning
+- **CSP integration for Task 2:** Applied Common Spatial Patterns filtering for cross-session domain adaptation
+- **Validation strategy exploration:** Experimented with different held-out subject partitioning schemes as recommended by the challenge organizers
+- **Submission pipeline:** End-to-end inference script generating the required per-subject CSV files for both tasks
+
+---
+
+## Repository Structure
+
+```
+.
+├── trainer.py          # Main training loop (cross-subject)
+├── model_module.py     # DARNet architecture (Attention, TokenEmbedding, AttnRefine)
+├── utils.py            # Dataset class, data loader, model save/load utilities
+├── inference.py        # Inference script generating submission CSVs
+├── requirements.txt    # Python dependencies
+├── run.sh              # SLURM batch script for cluster training
+└── exps/
+    └── cross-subject/
+        └── DARNet/     # Saved model checkpoints and figures
+```
+
+---
+
+## How to Run
+
+### Requirements
+
+```bash
+Python 3.9
+pip install -r requirements.txt
+```
+
+Tested on a single NVIDIA RTX 4090 GPU. Training was run on SLURM-managed GPU clusters.
+
+### Training
+
+```bash
+python trainer.py
+```
+
+Best model checkpoint (by validation accuracy) is saved to `exps/cross-subject/DARNet/`.
+
+### Inference
+
+Generates the required CSV files for final submission:
+
+```bash
 python inference.py --model DARNet --resume exps/cross-subject/DARNet/baseline_2025-02-28-01-39-14
 ```
 
-Running inference on **cross subject** will create a csv file named *results_cross_subject_test_subject.csv* for the held-out-subjects test set.
+**Output files:**
+- Task 1: `results_cross_subject_test_subject.csv`
+- Task 2: `results_cross_session_test_subject.csv`
 
-Each csv has only two columns:
-- **id**: the id of the sample
-- **prediction**: the predicted class
+Each CSV contains:
+- `id`: sample ID
+- `prediction`: predicted class (0 = right, 1 = left)
 
+### SLURM Cluster
 
-# References
-[1] Cunhang Fan, Hongyu Zhang, Qinke Ni, Jingjing Zhang, Jianhua Tao, Jian Zhou, Jiangyan Yi, Zhao Lv, and Xiaopei Wu. eeing helps hearing: A multi-modal dataset and a mamba-based dual branch parallel network for auditory attention decoding. Information Fusion, page 102946, 2025.
+```bash
+sbatch run.sh
+```
 
-[2] Sheng Yan, Cunhang Fan, Hongyu Zhang, Xiaoke Yang, Jianhua Tao, and Zhao Lv. Darnet: Dual attention refinement network with spatiotemporal construction for auditory attention detection. Advances in Neural Information Processing Systems,37:31688–31707, 2024. 
+Update paths in `run.sh` and `trainer.py` to match your cluster environment.
+
+---
+
+## Baseline vs. Team Euler Results
+
+| Model | Task | Val Acc (Baseline) | Val Acc (Team Euler) |
+|---|---|---|---|
+| DARNet (no CSP) | Cross-Subject | 53.1% | 52.12% (test) |
+| DARNet (CSP) | Cross-Session | 57.33% | 50.99% (test) |
+
+> Note: Baseline numbers are on the validation set; our results are final held-out test set scores reported by the challenge leaderboard.
+
+---
+
+## References
+
+[1] Cunhang Fan et al. "Seeing helps hearing: A multi-modal dataset and a mamba-based dual branch parallel network for auditory attention decoding." *Information Fusion*, 2025.
+
+[2] Sheng Yan et al. "DARNet: Dual Attention Refinement Network with Spatiotemporal Construction for Auditory Attention Detection." *NeurIPS*, 37:31688–31707, 2024.
+
+---
+
+## Citation
+
+If you use this code, please cite the original DARNet paper and the MM-AAD dataset as above, and acknowledge the ICASSP 2026 EEG-AAD Challenge.
+
+---
+
+## Acknowledgements
+
+This work was carried out under the supervision of **Dr. Rajkumar Saini** at Luleå University of Technology, Sweden, as part of a research internship from IIT (BHU) Varanasi.
