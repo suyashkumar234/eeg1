@@ -114,10 +114,10 @@ Two branches represent different experimental strategies for cross-subject gener
 
 | Branch | Strategy | Val Acc | Test Acc |
 |---|---|---|---|
-| `main` | DARNet baseline | 53.1% | **52.12%** (submitted) |
-| `subject-adversarial-contrastive` | DARNet + Gradient Reversal + InfoNCE | 55.18% | — |
+| `main` | DARNet baseline | 53.1% | **49.63%** (baseline)  |
+| `subject-adversarial-contrastive` | DARNet + Gradient Reversal + InfoNCE | 55.18% | **52.12%** (submitted) |
 
-The `main` branch was used for the final submission. The adversarial-contrastive branch achieved higher validation accuracy but was not submitted for Track 1.
+The `subject-adversarial-contrastive` branch was used for the final submission. The adversarial-contrastive branch achieved higher validation accuracy on cross-validation.
 
 ---
 
@@ -206,7 +206,7 @@ Python 3.9
 pip install -r requirements.txt
 ```
 
-Tested on NVIDIA RTX 4090. Training also run on SLURM-managed GPU clusters.
+Tested on NVIDIA V100 Tesla. Training also run on SLURM-managed GPU clusters.
 
 ### Training
 
